@@ -12,9 +12,12 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "immer": "^11.1.8",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "sass": "^1.100.0",
+    "styled-components": "^6.4.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.0.1",
@@ -23,6 +26,7 @@
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@types/styled-components": "^5.1.36",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",
     "@vitejs/plugin-react": "^6.0.1",
