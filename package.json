@@ -12,7 +12,9 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.2.5",
     "ahooks": "^3.9.7",
+    "antd": "^6.4.3",
     "classnames": "^2.5.1",
     "immer": "^11.1.8",
     "react": "^19.2.6",
