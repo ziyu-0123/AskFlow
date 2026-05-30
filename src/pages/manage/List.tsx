@@ -1,6 +1,8 @@
 import type { FC } from 'react'
 import { useState } from 'react'
-import QuestionCard from '../components/QuestionCard'
+import { useTitle } from 'ahooks'
+// import { useSearchParams } from 'react-router-dom'
+import QuestionCard from '../../components/QuestionCard'
 import styles from './List.module.scss'
 const rawQuestionList = [
   {
@@ -37,6 +39,10 @@ const rawQuestionList = [
   },
 ]
 const List: FC = () => {
+  useTitle('AskFlow - My questionnaire')
+  // const [searchParams] = useSearchParams()
+  // console.log('keyword', searchParams.get('keyword'))
+
   const [questionList] = useState(rawQuestionList)
   return (
     <>
