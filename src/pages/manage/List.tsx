@@ -2,6 +2,7 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import { useTitle } from 'ahooks'
 // import { useSearchParams } from 'react-router-dom'
+import { Typography } from 'antd'
 import QuestionCard from '../../components/QuestionCard'
 import styles from './common.module.scss'
 const rawQuestionList = [
@@ -38,6 +39,8 @@ const rawQuestionList = [
     createdAt: '3月9日 13:23',
   },
 ]
+
+const { Title } = Typography
 const List: FC = () => {
   useTitle('AskFlow - My questionnaire')
   // const [searchParams] = useSearchParams()
@@ -48,7 +51,9 @@ const List: FC = () => {
     <>
       <div className={styles.header}>
         <div className={styles.left}>
-          <h3>我的问卷</h3>
+          <Title level={3} style={{ marginTop: 0 }}>
+            我的问卷
+          </Title>
         </div>
         <div className={styles.right}>(搜索)</div>
       </div>
