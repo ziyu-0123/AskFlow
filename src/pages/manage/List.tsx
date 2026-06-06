@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useTitle } from 'ahooks'
 // import { useSearchParams } from 'react-router-dom'
 import QuestionCard from '../../components/QuestionCard'
-import styles from './List.module.scss'
+import styles from './common.module.scss'
 const rawQuestionList = [
   {
     _id: 'q1',
@@ -53,12 +53,13 @@ const List: FC = () => {
         <div className={styles.right}>(搜索)</div>
       </div>
       <div className={styles.content}>
-        {questionList.map(q => {
-          const { _id } = q
-          return <QuestionCard key={_id} {...q} />
-        })}
+        {questionList.length > 0 &&
+          questionList.map(q => {
+            const { _id } = q
+            return <QuestionCard key={_id} {...q} />
+          })}
       </div>
-      <div className={styles.footer}>footer</div>
+      <div className={styles.footer}>loadMore... 上划加载更多...</div>
     </>
   )
 }
