@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { Button, Space, Divider, Tag } from 'antd'
+import { Button, Space, Divider, Tag, Popconfirm, message } from 'antd'
 import { useNavigate, Link } from 'react-router-dom'
 import {
   EditOutlined,
@@ -22,6 +22,11 @@ type PropsType = {
 const QuestionCard: FC<PropsType> = (props: PropsType) => {
   const nav = useNavigate()
   const { _id, isStar, title, createdAt, answerCount, isPublished } = props
+
+  function duplicate() {
+    message.success('已复制')
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.title}>
@@ -75,9 +80,16 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
             <Button type="text" icon={<StarOutlined />} size="small">
               {isStar ? '取消标星' : '标星'}
             </Button>
-            <Button type="text" icon={<CopyOutlined />} size="small">
-              复制
-            </Button>
+            <Popconfirm
+              title="确认复制该问卷?"
+              okText="确定"
+              cancelText="取消"
+              onConfirm={duplicate}
+            >
+              <Button type="text" icon={<CopyOutlined />} size="small">
+                复制
+              </Button>
+            </Popconfirm>
             <Button type="text" icon={<DeleteOutlined />} size="small">
               删除
             </Button>
