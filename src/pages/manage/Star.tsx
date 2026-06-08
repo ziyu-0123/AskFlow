@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import { Typography, Empty } from 'antd'
+import { useTitle } from 'ahooks'
 import QuestionCard from '../../components/QuestionCard'
 import styles from './common.module.scss'
 
@@ -34,6 +35,7 @@ const rawQuestionList = [
 const { Title } = Typography
 
 const Star: FC = () => {
+  useTitle('AskFlow - Starred Questionnaires')
   const [questionList] = useState(rawQuestionList)
 
   return (

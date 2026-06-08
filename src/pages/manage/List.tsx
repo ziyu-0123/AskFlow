@@ -42,7 +42,7 @@ const rawQuestionList = [
 
 const { Title } = Typography
 const List: FC = () => {
-  useTitle('AskFlow - My questionnaire')
+  useTitle('AskFlow - My Questionnaires')
   // const [searchParams] = useSearchParams()
   // console.log('keyword', searchParams.get('keyword'))
 
