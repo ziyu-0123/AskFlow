@@ -22,6 +22,7 @@ const ListSearch: FC = () => {
   }, [searchParams])
 
   function handleSearch(value: string) {
+    console.log('🔍 搜索执行，关键词:', value) // 👈 加这行
     nav({
       pathname,
       search: `${LIST_SEARCH_PARAM_KEY}=${value}`,

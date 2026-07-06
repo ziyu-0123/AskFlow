@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { useState } from 'react'
+import { useRequest } from 'ahooks'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { Button, Space, Divider, message } from 'antd'
 import { PlusOutlined, BarsOutlined, StarOutlined, DeleteOutlined } from '@ant-design/icons'
@@ -10,17 +10,29 @@ const ManageLayout: FC = () => {
   const nav = useNavigate()
   const { pathname } = useLocation()
 
-  const [loading, setLoading] = useState(false)
-  async function handleCreateClick() {
-    setLoading(true)
-    const data = await createQuestionService()
-    const { id } = data || {}
-    if (id) {
-      nav(`/question/edit/${id}`)
+  // const [loading, setLoading] = useState(false)
+  // async function handleCreateClick() {
+  //   setLoading(true)
+  //   const data = await createQuestionService()
+  //   const { id } = data || {}
+  //   if (id) {
+  //     nav(`/question/edit/${id}`)
+  //     message.success('创建成功')
+  //   }
+  //   setLoading(false)
+  // }
+
+  const {
+    loading,
+    // error,
+    run: handleCreateClick,
+  } = useRequest(createQuestionService, {
+    manual: true,
+    onSuccess(result) {
+      nav(`/question/edit/${result._id}`)
       message.success('创建成功')
-    }
-    setLoading(false)
-  }
+    },
+  })
 
   console.log('pathname', pathname)
 
@@ -71,7 +83,7 @@ const ManageLayout: FC = () => {
         </Space>
       </div>
       <div className={styles.right}>
-        <Outlet />
+        <Outlet key={location.pathname} />
       </div>
     </div>
   )

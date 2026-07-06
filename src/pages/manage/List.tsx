@@ -1,53 +1,84 @@
+// import type { FC } from 'react'
+// // import { useState, useEffect } from 'react'
+// import { useTitle } from 'ahooks'
+// // import { useSearchParams } from 'react-router-dom'
+// import { Typography, Spin } from 'antd'
+// import QuestionCard from '../../components/QuestionCard'
+// import styles from './common.module.scss'
+// import ListSearch from '../../components/ListSearch'
+// import { type QuestionListData } from '../../services/question'
+// import useLoadQuestionListData from '../../hooks/useLoadQuestionData'
+
+// const { Title } = Typography
+
+// const List: FC = () => {
+//   useTitle('AskFlow - My Questionnaires')
+
+//   const { data, loading } = useLoadQuestionListData()
+//   const { list = [], total = 0 } = (data || { list: [], total: 0 }) as QuestionListData
+
+//   // const [list, setList] = useState<QuestionData[]>([])
+//   // const [total, setTotal] = useState(0)
+
+//   // useEffect(() => {
+//   //   async function load() {
+//   //     const data = await getQuestionListService()
+//   //     const { list = [], total = 0 } = data
+//   //     setList(list)
+//   //     setTotal(total)
+//   //   }
+//   //   load()
+//   // }, [])
+
+//   // const [searchParams] = useSearchParams()
+//   // console.log('keyword', searchParams.get('keyword'))
+//   return (
+//     <>
+//       <div className={styles.header}>
+//         <div className={styles.left}>
+//           <Title level={3} style={{ marginTop: 0 }}>
+//             我的问卷
+//           </Title>
+//         </div>
+//         <div className={styles.right}>
+//           <ListSearch />
+//         </div>
+//       </div>
+//       <div className={styles.content}>
+//         {loading && (
+//           <div style={{ textAlign: 'center' }}>
+//             <Spin />
+//           </div>
+//         )}
+//         {!loading &&
+//           list.length > 0 &&
+//           list.map(q => {
+//             const { _id } = q
+//             return <QuestionCard key={_id} {...q} />
+//           })}
+//       </div>
+//       <div className={styles.footer}>loadMore... 上划加载更多...</div>
+//     </>
+//   )
+// }
+
+// export default List
+
 import type { FC } from 'react'
-import { useState } from 'react'
 import { useTitle } from 'ahooks'
-// import { useSearchParams } from 'react-router-dom'
-import { Typography } from 'antd'
+import { Typography, Spin } from 'antd'
 import QuestionCard from '../../components/QuestionCard'
 import styles from './common.module.scss'
 import ListSearch from '../../components/ListSearch'
-const rawQuestionList = [
-  {
-    _id: 'q1',
-    title: '问卷1',
-    isPublished: false,
-    isStar: false,
-    answerCount: 5,
-    createdAt: '3月10日 13:23',
-  },
-  {
-    _id: 'q2',
-    title: '问卷2',
-    isPublished: true,
-    isStar: true,
-    answerCount: 3,
-    createdAt: '3月11日 13:23',
-  },
-  {
-    _id: 'q3',
-    title: '问卷3',
-    isPublished: false,
-    isStar: false,
-    answerCount: 6,
-    createdAt: '3月12日 13:23',
-  },
-  {
-    _id: 'q4',
-    title: '问卷4',
-    isPublished: true,
-    isStar: false,
-    answerCount: 2,
-    createdAt: '3月9日 13:23',
-  },
-]
+import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
 
 const { Title } = Typography
+
 const List: FC = () => {
   useTitle('AskFlow - My Questionnaires')
-  // const [searchParams] = useSearchParams()
-  // console.log('keyword', searchParams.get('keyword'))
 
-  const [questionList] = useState(rawQuestionList)
+  const { list, loading, total } = useLoadQuestionListData()
+
   return (
     <>
       <div className={styles.header}>
@@ -61,13 +92,26 @@ const List: FC = () => {
         </div>
       </div>
       <div className={styles.content}>
-        {questionList.length > 0 &&
-          questionList.map(q => {
+        {loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin />
+          </div>
+        )}
+        {!loading &&
+          list.length > 0 &&
+          list.map(q => {
             const { _id } = q
             return <QuestionCard key={_id} {...q} />
           })}
+        {!loading && list.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '50px 0' }}>暂无数据</div>
+        )}
       </div>
-      <div className={styles.footer}>loadMore... 上划加载更多...</div>
+      <div className={styles.footer}>
+        {total > 0 && `共 ${total} 份问卷`}
+        <br />
+        上划加载更多...
+      </div>
     </>
   )
 }

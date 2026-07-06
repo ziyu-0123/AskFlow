@@ -2,12 +2,12 @@ import type { FC } from 'react'
 import useLoadQuestionData from '../../../hooks/useLoadQuestionData'
 
 const Edit: FC = () => {
-  const { loading, questionData } = useLoadQuestionData()
+  const { loading, data } = useLoadQuestionData()
 
   return (
     <div>
       <p>Edit Page</p>
-      {loading ? <p>loading</p> : <p>{JSON.stringify(questionData)}</p>}
+      {loading ? <p>loading</p> : <p>{JSON.stringify(data)}</p>}
     </div>
   )
 }
