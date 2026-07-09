@@ -31,7 +31,14 @@ import { useLocation } from 'react-router-dom'
 import { getQuestionListService } from '../services/question'
 import { LIST_SEARCH_PARAM_KEY } from '../constant'
 
-function useLoadQuestionListData() {
+type OptionType = {
+  isStar: boolean
+  isDeleted: boolean
+}
+
+function useLoadQuestionListData(opt: Partial<OptionType> = {}) {
+  const { isStar, isDeleted } = opt
+
   const location = useLocation()
 
   // 从 URL 解析 keyword
@@ -40,7 +47,7 @@ function useLoadQuestionListData() {
 
   const { data, loading, error } = useRequest(
     async () => {
-      const data = await getQuestionListService({ keyword })
+      const data = await getQuestionListService({ keyword, isStar, isDeleted })
       return data
     },
     {

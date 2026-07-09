@@ -2,6 +2,8 @@ import axios from './ajax'
 
 type SearchOption = {
   keyword: string
+  isStar: boolean
+  isDeleted: boolean
 }
 
 // 单个问卷类型

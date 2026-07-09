@@ -66,7 +66,7 @@
 
 import type { FC } from 'react'
 import { useTitle } from 'ahooks'
-import { Typography, Spin } from 'antd'
+import { Typography, Spin, Empty } from 'antd'
 import QuestionCard from '../../components/QuestionCard'
 import styles from './common.module.scss'
 import ListSearch from '../../components/ListSearch'
@@ -103,9 +103,7 @@ const List: FC = () => {
             const { _id } = q
             return <QuestionCard key={_id} {...q} />
           })}
-        {!loading && list.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '50px 0' }}>暂无数据</div>
-        )}
+        {!loading && list.length === 0 && <Empty description="暂无数据" />}
       </div>
       <div className={styles.footer}>
         {total > 0 && `共 ${total} 份问卷`}
