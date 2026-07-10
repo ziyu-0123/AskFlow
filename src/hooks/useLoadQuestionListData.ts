@@ -30,6 +30,7 @@ import { useRequest } from 'ahooks'
 import { useLocation } from 'react-router-dom'
 import { getQuestionListService } from '../services/question'
 import { LIST_SEARCH_PARAM_KEY } from '../constant'
+import { LIST_PAGE_PARAM_KEY, LIST_PAGE_SIZE_PARAM_KEY, LIST_PAGE_SIZE } from '../constant/index'
 
 type OptionType = {
   isStar: boolean
@@ -44,10 +45,12 @@ function useLoadQuestionListData(opt: Partial<OptionType> = {}) {
   // 从 URL 解析 keyword
   const params = new URLSearchParams(location.search)
   const keyword = params.get(LIST_SEARCH_PARAM_KEY) || ''
+  const page = parseInt(params.get(LIST_PAGE_PARAM_KEY) || '') || 1
+  const pageSize = parseInt(params.get(LIST_PAGE_SIZE_PARAM_KEY) || '') || LIST_PAGE_SIZE
 
   const { data, loading, error } = useRequest(
     async () => {
-      const data = await getQuestionListService({ keyword, isStar, isDeleted })
+      const data = await getQuestionListService({ keyword, isStar, isDeleted, page, pageSize })
       return data
     },
     {

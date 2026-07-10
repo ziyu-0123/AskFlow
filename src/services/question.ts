@@ -4,6 +4,8 @@ type SearchOption = {
   keyword: string
   isStar: boolean
   isDeleted: boolean
+  page: number
+  pageSize: number
 }
 
 // 单个问卷类型

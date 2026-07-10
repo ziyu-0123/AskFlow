@@ -5,13 +5,14 @@ import styles from './common.module.scss'
 import { Typography, Empty, Table, Tag, Button, Space, Modal, message, Spin } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import ListSearch from '../../components/ListSearch'
+import ListPage from '../../components/ListPage'
 import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
 
 const { Title } = Typography
 const { confirm } = Modal
 
 const Trash: FC = () => {
-  const { list, loading } = useLoadQuestionListData({ isDeleted: true })
+  const { list, loading, total } = useLoadQuestionListData({ isDeleted: true })
   const [selectedIds, setSelectedIds] = useState<string[]>([])
 
   function del() {
@@ -95,6 +96,9 @@ const Trash: FC = () => {
         )}
         {!loading && list.length == 0 && <Empty description="暂无数据" />}
         {!loading && list.length > 0 && TableElem}
+      </div>
+      <div className={styles.footer}>
+        <ListPage total={total} />
       </div>
     </>
   )

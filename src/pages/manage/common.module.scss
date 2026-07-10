@@ -18,4 +18,9 @@
 
 .footer {
   text-align: center;
+
+  // 确保 Pagination 组件居中
+  :global(.ant-pagination) {
+    display: inline-block;
+  }
 }
