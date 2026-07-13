@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Button, Space, Divider, Tag, Popconfirm, message } from 'antd'
+import { Button, Space, Divider, Tag, Popconfirm, message, Modal } from 'antd'
 import { useNavigate, Link } from 'react-router-dom'
 import {
   EditOutlined,
@@ -8,6 +8,7 @@ import {
   StarOutlined,
   CopyOutlined,
   DeleteOutlined,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import styles from './QuestionCard.module.scss'
 import { updateQuestionService, duplicateQuestionService } from '../services/question'
@@ -66,6 +67,32 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
       },
     }
   )
+
+  // 删除
+  const [isDeletedState, setIsDeletedState] = useState(false)
+  const { loading: deleteLoading, run: deleteQuestion } = useRequest(
+    async () => await updateQuestionService(id, { isDeleted: true }),
+    {
+      manual: true,
+      onSuccess() {
+        message.success('删除成功')
+        setIsDeletedState(true)
+      },
+    }
+  )
+
+  function del() {
+    Modal.confirm({
+      title: '确认删除该问卷?',
+      icon: <ExclamationCircleOutlined />,
+      onOk: deleteQuestion,
+      okText: '确认',
+      cancelText: '取消',
+    })
+  }
+
+  // 已经删除的卡片不要渲染
+  if (isDeletedState) return null
 
   return (
     <div className={styles.container}>
@@ -136,7 +163,13 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
                 复制
               </Button>
             </Popconfirm>
-            <Button type="text" icon={<DeleteOutlined />} size="small">
+            <Button
+              type="text"
+              icon={<DeleteOutlined />}
+              size="small"
+              disabled={deleteLoading}
+              onClick={del}
+            >
               删除
             </Button>
           </Space>
