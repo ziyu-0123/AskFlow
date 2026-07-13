@@ -10,7 +10,7 @@ type SearchOption = {
 
 // 单个问卷类型
 export interface QuestionData {
-  _id: string
+  id: string
   title: string
   desc?: string // 可选，可能没有
   isPublished: boolean
@@ -52,12 +52,19 @@ export async function getQuestionListService(
   return data
 }
 
-// // 更新问卷信息
+// 更新问卷信息
 export async function updateQuestionService(
   id: string,
   opt: Record<string, unknown>
 ): Promise<QuestionListData> {
   const url = `/api/question/${id}`
   const data = (await axios.patch(url, opt)) as QuestionListData
+  return data
+}
+
+// 复制问卷信息
+export async function duplicateQuestionService(id: string): Promise<{ id: string }> {
+  const url = `/api/question/duplicate/${id}`
+  const data = (await axios.post(url)) as { id: string }
   return data
 }

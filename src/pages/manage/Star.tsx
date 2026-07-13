@@ -35,8 +35,8 @@ const Star: FC = () => {
         {!loading &&
           list.length > 0 &&
           list.map(q => {
-            const { _id } = q
-            return <QuestionCard key={_id} {...q} />
+            const { id } = q
+            return <QuestionCard key={id} {...q} />
           })}
         {!loading && list.length === 0 && <Empty description="暂无数据" />}
         {/* {list.length == 0 && <Empty description="暂无数据" />}

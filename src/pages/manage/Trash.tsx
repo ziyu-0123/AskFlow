@@ -65,7 +65,7 @@ const Trash: FC = () => {
         dataSource={list}
         columns={tableColumns}
         pagination={false}
-        rowKey={q => q._id}
+        rowKey={q => q.id}
         rowSelection={{
           type: 'checkbox',
           onChange: selectedRowKeys => {

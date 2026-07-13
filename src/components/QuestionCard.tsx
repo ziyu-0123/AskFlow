@@ -10,11 +10,11 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons'
 import styles from './QuestionCard.module.scss'
-import { updateQuestionService } from '../services/question'
+import { updateQuestionService, duplicateQuestionService } from '../services/question'
 import { useRequest } from 'ahooks'
 
 type PropsType = {
-  _id: string
+  id: string
   title: string
   isStar: boolean
   isPublished: boolean
@@ -22,16 +22,21 @@ type PropsType = {
   createdAt: string
 }
 
+// 复制接口返回类型
+interface DuplicateResponse {
+  id: string
+}
+
 const QuestionCard: FC<PropsType> = (props: PropsType) => {
   const nav = useNavigate()
-  const { _id, isStar, title, createdAt, answerCount, isPublished } = props
+  const { id, isStar, title, createdAt, answerCount, isPublished } = props
 
   // 修改标星
   const [isStarState, setIsStarState] = useState(isStar)
   const { loading: changeStarLoading, run: changeStar } = useRequest(
     async () => {
       const newIsStar = !isStarState
-      await updateQuestionService(_id, { isStar: newIsStar })
+      await updateQuestionService(id, { isStar: newIsStar })
       return newIsStar
     },
     {
@@ -43,15 +48,30 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
     }
   )
 
-  function duplicate() {
-    message.success('已复制')
-  }
+  // function duplicate() {
+  //   message.success('已复制')
+  // }
+
+  // 复制
+  const { loading: duplicateLoading, run: duplicate } = useRequest(
+    async (): Promise<DuplicateResponse> => {
+      const result = await duplicateQuestionService(id)
+      return result as DuplicateResponse
+    },
+    {
+      manual: true,
+      onSuccess(result: DuplicateResponse) {
+        message.success('复制成功')
+        nav(`/question/edit/${result.id}`)
+      },
+    }
+  )
 
   return (
     <div className={styles.container}>
       <div className={styles.title}>
         <div className={styles.left}>
-          <Link to={isPublished ? `/question/stat/${_id}` : `/question/edit/${_id}`}>
+          <Link to={isPublished ? `/question/stat/${id}` : `/question/edit/${id}`}>
             <Space>
               {isStarState && <StarOutlined style={{ color: 'red' }} />}
               {title}
@@ -77,7 +97,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
               type="text"
               size="small"
               onClick={() => {
-                nav(`/question/edit/${_id}`)
+                nav(`/question/edit/${id}`)
               }}
             >
               编辑问卷
@@ -87,7 +107,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
               type="text"
               size="small"
               onClick={() => {
-                nav(`/question/stat/${_id}`)
+                nav(`/question/stat/${id}`)
               }}
               disabled={!isPublished}
             >
@@ -112,7 +132,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
               cancelText="取消"
               onConfirm={duplicate}
             >
-              <Button type="text" icon={<CopyOutlined />} size="small">
+              <Button type="text" icon={<CopyOutlined />} size="small" disabled={duplicateLoading}>
                 复制
               </Button>
             </Popconfirm>

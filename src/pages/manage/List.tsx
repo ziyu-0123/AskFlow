@@ -113,8 +113,8 @@ const List: FC = () => {
       <div className={styles.content}>
         {list.length > 0 &&
           list.map(q => {
-            const { _id } = q
-            return <QuestionCard key={_id} {...q} />
+            const { id } = q
+            return <QuestionCard key={id} {...q} />
           })}
       </div>
       <div className={styles.footer}>
