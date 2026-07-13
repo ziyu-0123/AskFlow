@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { useTitle } from 'ahooks'
+import { useTitle, useRequest } from 'ahooks'
 import { useState } from 'react'
 import styles from './common.module.scss'
 import { Typography, Empty, Table, Tag, Button, Space, Modal, message, Spin } from 'antd'
@@ -7,13 +7,31 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import ListSearch from '../../components/ListSearch'
 import ListPage from '../../components/ListPage'
 import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
+import { updateQuestionService } from '../../services/question'
 
 const { Title } = Typography
 const { confirm } = Modal
 
 const Trash: FC = () => {
-  const { list, loading, total } = useLoadQuestionListData({ isDeleted: true })
+  const { list, loading, total, refresh } = useLoadQuestionListData({ isDeleted: true })
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+
+  // 恢复
+  const { run: recover } = useRequest(
+    async () => {
+      for await (const id of selectedIds) {
+        await updateQuestionService(id, { isDeleted: false })
+      }
+    },
+    {
+      manual: true,
+      debounceWait: 500,
+      onSuccess() {
+        message.success('已恢复')
+        refresh() // 手动刷新列表
+      },
+    }
+  )
 
   function del() {
     confirm({
@@ -55,7 +73,9 @@ const Trash: FC = () => {
     <>
       <div style={{ marginBottom: '16px' }}>
         <Space>
-          <Button disabled={selectedIds.length === 0}>恢复</Button>
+          <Button disabled={selectedIds.length === 0} onClick={recover}>
+            恢复
+          </Button>
           <Button danger disabled={selectedIds.length === 0} onClick={del}>
             删除
           </Button>

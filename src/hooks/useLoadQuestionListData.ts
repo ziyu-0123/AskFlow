@@ -48,7 +48,7 @@ function useLoadQuestionListData(opt: Partial<OptionType> = {}) {
   const page = parseInt(params.get(LIST_PAGE_PARAM_KEY) || '') || 1
   const pageSize = parseInt(params.get(LIST_PAGE_SIZE_PARAM_KEY) || '') || LIST_PAGE_SIZE
 
-  const { data, loading, error } = useRequest(
+  const { data, loading, error, refresh } = useRequest(
     async () => {
       const data = await getQuestionListService({ keyword, isStar, isDeleted, page, pageSize })
       return data
@@ -63,7 +63,7 @@ function useLoadQuestionListData(opt: Partial<OptionType> = {}) {
   const list = data?.list ?? []
   const total = data?.total ?? 0
 
-  return { loading, error, list, total }
+  return { loading, error, list, total, refresh }
 }
 
 export default useLoadQuestionListData
