@@ -51,3 +51,13 @@ export async function getQuestionListService(
   const data = (await axios.get(url, { params: opt })) as QuestionListData
   return data
 }
+
+// // 更新问卷信息
+export async function updateQuestionService(
+  id: string,
+  opt: Record<string, unknown>
+): Promise<QuestionListData> {
+  const url = `/api/question/${id}`
+  const data = (await axios.patch(url, opt)) as QuestionListData
+  return data
+}
