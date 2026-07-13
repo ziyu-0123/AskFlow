@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useTitle, useDebounceFn, useRequest } from 'ahooks'
 import { Typography, Spin, Empty } from 'antd'
 import { useSearchParams } from 'react-router-dom'
@@ -15,12 +15,22 @@ const { Title } = Typography
 const List: FC = () => {
   useTitle('AskFlow - My Questionnaires')
 
+  const [started, setStarted] = useState(false)
   const [page, setPage] = useState(1)
   const [list, setList] = useState<QuestionData[]>([])
   const [total, setTotal] = useState(0)
   const haveMoreData = total > list.length
 
   const [searchParams] = useSearchParams()
+  const keyword = searchParams.get(LIST_SEARCH_PARAM_KEY) || ''
+
+  // keyword 变化时重新加载
+  useEffect(() => {
+    setStarted(false)
+    setPage(1)
+    setList([])
+    setTotal(0)
+  }, [keyword])
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -30,7 +40,7 @@ const List: FC = () => {
       const data = await getQuestionListService({
         page,
         pageSize: LIST_PAGE_SIZE,
-        keyword: searchParams.get(LIST_SEARCH_PARAM_KEY) || '',
+        keyword,
       })
       return data
     },
@@ -53,7 +63,10 @@ const List: FC = () => {
       const domRect = elem.getBoundingClientRect()
       if (domRect === null) return
       const { bottom } = domRect
-      if (bottom <= document.body.clientHeight) load()
+      if (bottom <= document.body.clientHeight) {
+        load()
+        setStarted(true)
+      }
     },
     {
       wait: 500,
@@ -78,6 +91,13 @@ const List: FC = () => {
     }
   }, [searchParams, haveMoreData])
 
+  const LoadMoreContentElem = useMemo(() => {
+    if (!started || loading) return <Spin />
+    if (total === 0) return <Empty description="暂无数据" />
+    if (!haveMoreData) return <span>没有更多了</span>
+    return <span>开始加载下一页</span>
+  }, [started, loading, haveMoreData])
+
   return (
     <>
       <div className={styles.header}>
@@ -91,22 +111,14 @@ const List: FC = () => {
         </div>
       </div>
       <div className={styles.content}>
-        {/* <div style={{ height: '2000px' }}></div> */}
-        {loading && (
-          <div style={{ textAlign: 'center' }}>
-            <Spin />
-          </div>
-        )}
-        {!loading &&
-          list.length > 0 &&
+        {list.length > 0 &&
           list.map(q => {
             const { _id } = q
             return <QuestionCard key={_id} {...q} />
           })}
-        {!loading && list.length === 0 && <Empty description="暂无数据" />}
       </div>
       <div className={styles.footer}>
-        <div ref={containerRef}>上划加载更多...</div>
+        <div ref={containerRef}>{LoadMoreContentElem}</div>
       </div>
     </>
   )
