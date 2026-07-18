@@ -68,3 +68,10 @@ export async function duplicateQuestionService(id: string): Promise<{ id: string
   const data = (await axios.post(url)) as { id: string }
   return data
 }
+
+// 批量彻底删除
+export async function deleteQuestionService(ids: string[]): Promise<QuestionListData> {
+  const url = `/api/question`
+  const data = (await axios.post(url, { data: { ids } })) as QuestionListData
+  return data
+}

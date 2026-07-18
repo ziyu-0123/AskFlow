@@ -1,10 +1,13 @@
 import type { FC } from 'react'
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Typography, Space, Form, Input, Button, Checkbox } from 'antd'
+import { Link, useNavigate } from 'react-router-dom'
+import { Typography, Space, Form, Input, Button, Checkbox, message } from 'antd'
 import { UserAddOutlined } from '@ant-design/icons'
-import { REGISTER_PATHNAME } from '../router'
+import { MANAGE_INDEX_PATHNAME, REGISTER_PATHNAME } from '../router'
 import styles from './Login.module.scss'
+import { loginService } from '../services/user'
+import { useRequest } from 'ahooks'
+import { setToken } from '../utils/user-token'
 
 interface LoginFormValues {
   username: string
@@ -35,6 +38,7 @@ function getUserInfoFromStorage() {
 }
 
 const Login: FC = () => {
+  const nav = useNavigate()
   const [form] = Form.useForm()
 
   useEffect(() => {
@@ -42,9 +46,27 @@ const Login: FC = () => {
     form.setFieldsValue({ username, password })
   }, [])
 
+  const { run } = useRequest(
+    async (username: string, password: string) => {
+      const data = await loginService(username, password)
+      return data
+    },
+    {
+      manual: true,
+      onSuccess(result) {
+        const { token = '' } = result
+        setToken(token)
+        message.success('登录成功')
+        nav(MANAGE_INDEX_PATHNAME)
+      },
+    }
+  )
+
   const onFinish = (values: LoginFormValues) => {
-    console.log('values', values)
     const { username, password, remember } = values || {}
+
+    run(username, password)
+
     if (remember) {
       rememberUser(username, password)
     } else {
