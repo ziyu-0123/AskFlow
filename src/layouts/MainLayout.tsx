@@ -1,13 +1,15 @@
 import type { FC } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Layout } from 'antd'
+import { Layout, Spin } from 'antd'
 import Logo from '../components/Logo'
 import UserInfo from '../components/UserInfo'
 import styles from './MainLayout.module.scss'
+import useLoadUserData from '../hooks/useLoadUserData'
 
 const { Header, Content, Footer } = Layout
 
 const MainLayout: FC = () => {
+  const { waitingUserData } = useLoadUserData()
   return (
     <Layout>
       <Header className={styles.header}>
@@ -18,9 +20,17 @@ const MainLayout: FC = () => {
           <UserInfo />
         </div>
       </Header>
-      <Content className={styles.main}>
-        <Outlet />
-      </Content>
+      <Layout className={styles.main}>
+        <Content>
+          {waitingUserData ? (
+            <div style={{ textAlign: 'center', marginTop: '60px' }}>
+              <Spin />
+            </div>
+          ) : (
+            <Outlet />
+          )}
+        </Content>
+      </Layout>
       <Footer className={styles.footer}>AskFlow &copy;2026-present Created by ziyu-0123</Footer>
     </Layout>
   )
