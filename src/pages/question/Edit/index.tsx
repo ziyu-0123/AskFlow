@@ -1,13 +1,24 @@
 import type { FC } from 'react'
-import useLoadQuestionData from '../../../hooks/useLoadQuestionData'
+// import useLoadQuestionData from '../../../hooks/useLoadQuestionData'
+import styles from './index.module.scss'
 
 const Edit: FC = () => {
-  const { loading, data } = useLoadQuestionData()
+  // const { loading, data } = useLoadQuestionData()
 
   return (
-    <div>
-      <p>Edit Page</p>
-      {loading ? <p>loading</p> : <p>{JSON.stringify(data)}</p>}
+    <div className={styles.container}>
+      <div style={{ backgroundColor: '#fff' }}>Header</div>
+      <div className={styles['content-wrapper']}>
+        <div className={styles.content}>
+          <div className={styles.left}>L</div>
+          <div className={styles.main}>
+            <div className={styles['canvas-wrapper']}>
+              <div style={{ height: '900px' }}>画布，测试滚动</div>
+            </div>
+          </div>
+          <div className={styles.right}>R</div>
+        </div>
+      </div>
     </div>
   )
 }

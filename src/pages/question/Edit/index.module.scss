@@ -1,0 +1,99 @@
+// .container {
+//   display: flex;
+//   flex-direction: column;
+//   height: 100vh;
+//   background-color: #f0f2f5;
+// }
+
+// .content-wrapper {
+//   flex: auto;
+//   padding: 12px 0;
+// }
+
+// .content {
+//   margin: 0 24px;
+//   display: flex;
+//   height: 100%;
+
+//   .left {
+//     width: 285px;
+//     background-color: #fff;
+//     padding: 0 12px;
+//   }
+
+//   .main {
+//     flex: 1;
+//     position: relative;
+//     overflow: hidden;
+
+//     .canvas-wrapper {
+//       position: absolute;
+//       width: 400px;
+//       height: 712px;
+//       top: 50%;
+//       left: 50%;
+//       transform: translateX(-50%) translateY(-50%);
+//       background-color: #fff;
+//       overflow: auto;
+//       box-shadow: 0 2px 10px #0000001f;
+//     }
+//   }
+
+//   .right {
+//     width: 300px;
+//       background-color: #fff;
+//       padding: 0 12px;
+//   }
+// }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.content-wrapper {
+  flex: 1; // 改为 flex: 1，占满剩余空间
+  padding: 12px 0;
+  min-height: 0; // 防止 flex 溢出
+}
+
+.content {
+  margin: 0 24px;
+  display: flex;
+  height: 100%; // 现在可以正常继承了
+  min-height: 0; // 防止 flex 溢出
+
+  .left {
+    width: 285px;
+    background-color: #fff;
+    padding: 0 12px;
+  }
+
+  .main {
+    flex: 1;
+    position: relative;
+    min-height: 0; // 关键：防止 flex 子项溢出
+
+    .canvas-wrapper {
+      position: absolute;
+      width: 400px;
+      height: 712px;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      background-color: #fff;
+      // 如果高度超出，可以加个最大高度限制
+      max-height: 100%;
+      overflow: auto; // 超出滚动
+      box-shadow: 0 2px 10px #0000001f;
+    }
+  }
+
+  .right {
+    width: 300px;
+    background-color: #fff;
+    padding: 0 12px;
+  }
+}

@@ -8,18 +8,15 @@ const QuestionLayout: FC = () => {
   const { waitingUserData } = useLoadUserData()
   useNavPage(waitingUserData)
   return (
-    <>
-      <p>QuestionLayout left</p>
-      <div>
-        {waitingUserData ? (
-          <div style={{ textAlign: 'center', marginTop: '60px' }}>
-            <Spin />
-          </div>
-        ) : (
-          <Outlet />
-        )}
-      </div>
-    </>
+    <div style={{ height: '100vh' }}>
+      {waitingUserData ? (
+        <div style={{ textAlign: 'center', marginTop: '60px' }}>
+          <Spin />
+        </div>
+      ) : (
+        <Outlet />
+      )}
+    </div>
   )
 }
 
