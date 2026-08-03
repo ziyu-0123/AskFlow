@@ -8,6 +8,15 @@ type SearchOption = {
   pageSize: number
 }
 
+// export type ComponentType = 'questionTitle' | 'questionInput'
+
+// export interface ComponentData {
+//   id: string
+//   type: ComponentType
+//   title: string
+//   props: Record<string, unknown>
+// }
+
 // 单个问卷类型
 export interface QuestionData {
   id: string
@@ -18,6 +27,7 @@ export interface QuestionData {
   answerCount: number
   createdAt: string
   updatedAt?: string // 可选
+  // componentList?: ComponentData[]
 }
 
 // 问卷列表类型
@@ -72,6 +82,6 @@ export async function duplicateQuestionService(id: string): Promise<{ id: string
 // 批量彻底删除
 export async function deleteQuestionService(ids: string[]): Promise<QuestionListData> {
   const url = `/api/question`
-  const data = (await axios.post(url, { data: { ids } })) as QuestionListData
+  const data = (await axios.delete(url, { data: { ids } })) as QuestionListData
   return data
 }
