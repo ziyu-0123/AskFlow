@@ -8,14 +8,14 @@ type SearchOption = {
   pageSize: number
 }
 
-// export type ComponentType = 'questionTitle' | 'questionInput'
+export type ComponentType = 'questionTitle' | 'questionInput'
 
-// export interface ComponentData {
-//   id: string
-//   type: ComponentType
-//   title: string
-//   props: Record<string, unknown>
-// }
+export interface ComponentData {
+  id: string
+  type: ComponentType
+  title: string
+  props: Record<string, unknown>
+}
 
 // 单个问卷类型
 export interface QuestionData {
@@ -27,7 +27,7 @@ export interface QuestionData {
   answerCount: number
   createdAt: string
   updatedAt?: string // 可选
-  // componentList?: ComponentData[]
+  componentList?: ComponentData[]
 }
 
 // 问卷列表类型
