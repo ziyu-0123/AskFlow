@@ -40,7 +40,13 @@ function useLoadQuestionData() {
       }
     })
 
-    dispatch(resetComponents({ componentList: newComponentList }))
+    // 获取默认 selectedId
+    let selectedId = ''
+    if (newComponentList.length > 0) {
+      selectedId = newComponentList[0].fe_id
+    }
+
+    dispatch(resetComponents({ componentList: newComponentList, selectedId }))
   }, [data])
 
   // 判断 id 变化，执行 ajax 加载问卷数据
