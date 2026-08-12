@@ -31,9 +31,25 @@ export const componentsSlice = createSlice({
     changeSelectedId: (state: ComponentsStateType, action: PayloadAction<string>) => {
       state.selectedId = action.payload
     },
+    // 添加新组件
+    addComponent: (state: ComponentsStateType, action: PayloadAction<ComponentInfoType>) => {
+      const newComponent = action.payload
+
+      const { selectedId, componentList } = state
+      const index = componentList.findIndex(c => c.fe_id === selectedId)
+
+      // 未选中任何组件
+      if (index < 0) {
+        state.componentList.push(newComponent)
+      } else {
+        // 选中了组件，插入到 index 后面
+        state.componentList.splice(index + 1, 0, newComponent)
+      }
+      state.selectedId = newComponent.fe_id
+    },
   },
 })
 
-export const { resetComponents, changeSelectedId } = componentsSlice.actions
+export const { resetComponents, changeSelectedId, addComponent } = componentsSlice.actions
 
 export default componentsSlice.reducer
