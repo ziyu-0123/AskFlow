@@ -9,7 +9,7 @@ const LeftPanel: FC = () => {
       key: 'componentLib',
       label: (
         <span>
-          <AppstoreOutlined />
+          <AppstoreOutlined style={{ marginRight: 4 }} />
           组件库
         </span>
       ),
@@ -19,7 +19,7 @@ const LeftPanel: FC = () => {
       key: 'layers',
       label: (
         <span>
-          <BarsOutlined />
+          <BarsOutlined style={{ marginRight: 4 }} />
           图层
         </span>
       ),
