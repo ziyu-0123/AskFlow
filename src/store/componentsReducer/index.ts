@@ -47,9 +47,25 @@ export const componentsSlice = createSlice({
       }
       state.selectedId = newComponent.fe_id
     },
+    // 修改组件属性
+    changeComponentProps: (
+      state: ComponentsStateType,
+      action: PayloadAction<{ fe_id: string; newProps: ComponentPropsType }>
+    ) => {
+      const { fe_id, newProps } = action.payload
+      // 找到当前要修改属性的组件
+      const curComp = state.componentList.find(c => c.fe_id === fe_id)
+      if (curComp) {
+        curComp.props = {
+          ...curComp.props,
+          ...newProps,
+        }
+      }
+    },
   },
 })
 
-export const { resetComponents, changeSelectedId, addComponent } = componentsSlice.actions
+export const { resetComponents, changeSelectedId, addComponent, changeComponentProps } =
+  componentsSlice.actions
 
 export default componentsSlice.reducer
