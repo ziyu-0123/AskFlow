@@ -7,6 +7,7 @@ import type { ComponentInfoType } from '../../../store/componentsReducer'
 import { changeSelectedId } from '../../../store/componentsReducer'
 import { getComponentConfByType } from '../../../components/QuestionComponents'
 import styles from './EditCanvas.module.scss'
+import useBindCanvasKeyPress from '../../../hooks/useBindCanvasKeyPress'
 
 // import QuestionTitle from '../../../components/QuestionComponents/QuestionTitle/Component'
 // import QuestionInput from '../../../components/QuestionComponents/QuestionInput/Component'
@@ -31,6 +32,9 @@ const EditCanvas: FC<PropsType> = ({ loading }) => {
     event.stopPropagation()
     dispatch(changeSelectedId(id))
   }
+
+  // 绑定快捷键
+  useBindCanvasKeyPress()
 
   if (loading) {
     return (
