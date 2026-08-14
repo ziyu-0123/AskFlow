@@ -4,6 +4,8 @@ import {
   removeSelectedComponent,
   copySelectedComponent,
   pasteCopiedComponent,
+  selectPrevComponent,
+  selectNextComponent,
 } from '../store/componentsReducer'
 
 function isActiveElementValue() {
@@ -33,6 +35,18 @@ function useBindCanvasKeyPress() {
   useKeyPress(['ctrl.v', 'meta.v'], () => {
     if (!isActiveElementValue()) return
     dispatch(pasteCopiedComponent())
+  })
+
+  // 选中上一个
+  useKeyPress(['uparrow'], () => {
+    if (!isActiveElementValue()) return
+    dispatch(selectPrevComponent())
+  })
+
+  // 选中下一个
+  useKeyPress(['downarrow'], () => {
+    if (!isActiveElementValue()) return
+    dispatch(selectNextComponent())
   })
 }
 

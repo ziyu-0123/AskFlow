@@ -124,6 +124,28 @@ export const componentsSlice = createSlice({
       // 插入 copiedComponent
       insertNewComponent(state, copiedComponent)
     },
+    // 选中上一个
+    selectPrevComponent: (state: ComponentsStateType) => {
+      const { selectedId, componentList } = state
+      const selectedIndex = componentList.findIndex(c => c.fe_id === selectedId)
+
+      if (selectedIndex < 0) return // 未选中组件
+
+      if (selectedIndex <= 0) return //已经选中了第一个无法再向上选中
+
+      state.selectedId = componentList[selectedIndex - 1].fe_id
+    },
+    // 选中下一个
+    selectNextComponent: (state: ComponentsStateType) => {
+      const { selectedId, componentList } = state
+      const selectedIndex = componentList.findIndex(c => c.fe_id === selectedId)
+
+      if (selectedIndex < 0) return
+
+      if (selectedIndex + 1 === componentList.length) return
+
+      state.selectedId = componentList[selectedIndex + 1].fe_id
+    },
   },
 })
 
@@ -137,6 +159,8 @@ export const {
   toggleComponentLocked,
   copySelectedComponent,
   pasteCopiedComponent,
+  selectPrevComponent,
+  selectNextComponent,
 } = componentsSlice.actions
 
 export default componentsSlice.reducer
