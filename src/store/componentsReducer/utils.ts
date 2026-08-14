@@ -1,4 +1,4 @@
-import type { ComponentInfoType } from './index'
+import type { ComponentInfoType, ComponentsStateType } from './index'
 
 export function getNextSelectedId(fe_id: string, componentList: ComponentInfoType[]) {
   const visibleComponentList = componentList.filter(c => !c.isHidden)
@@ -23,4 +23,18 @@ export function getNextSelectedId(fe_id: string, componentList: ComponentInfoTyp
   }
 
   return newSelectedId
+}
+
+export function insertNewComponent(state: ComponentsStateType, newComponent: ComponentInfoType) {
+  const { selectedId, componentList } = state
+  const index = componentList.findIndex(c => c.fe_id === selectedId)
+
+  // 未选中任何组件
+  if (index < 0) {
+    state.componentList.push(newComponent)
+  } else {
+    // 选中了组件，插入到 index 后面
+    state.componentList.splice(index + 1, 0, newComponent)
+  }
+  state.selectedId = newComponent.fe_id
 }

@@ -46,7 +46,9 @@ function useLoadQuestionData() {
       selectedId = newComponentList[0].fe_id
     }
 
-    dispatch(resetComponents({ componentList: newComponentList, selectedId }))
+    dispatch(
+      resetComponents({ componentList: newComponentList, selectedId, copiedComponent: null })
+    )
   }, [data])
 
   // 判断 id 变化，执行 ajax 加载问卷数据
