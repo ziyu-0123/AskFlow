@@ -69,6 +69,29 @@
     width: 285px;
     background-color: #fff;
     padding: 0 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; // 防止 flex 溢出，让内容可滚动
+
+    // 让 antd Tabs 撑满高度
+    :global(.ant-tabs) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    // tab 内容区可滚动 + 隐藏滚动条
+    :global(.ant-tabs-content-holder) {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: none; // Firefox
+      -ms-overflow-style: none; // IE/Edge
+
+      &::-webkit-scrollbar {
+        display: none; // Chrome/Safari/Edge
+      }
+    }
   }
 
   .main {
