@@ -5,13 +5,14 @@ import { useDispatch } from 'react-redux'
 import { getQuestionService } from '../services/question'
 import { resetComponents } from '../store/componentsReducer'
 import type { ComponentPropsType } from '../components/QuestionComponents'
+import { resetPageInfo } from '../store/pageInfoReducer'
 
 function useLoadQuestionData() {
   const { id = '' } = useParams()
   const dispatch = useDispatch()
 
   // ajax 加载
-  const { data, loading, error, run } = useRequest(
+  const { data, loading, run } = useRequest(
     async (id: string) => {
       if (!id) throw new Error('没有问卷 id')
       const data = await getQuestionService(id)
@@ -26,7 +27,7 @@ function useLoadQuestionData() {
   useEffect(() => {
     if (!data) return
 
-    const { componentList = [] } = data
+    const { title = '', desc = '', componentList = [] } = data
 
     // 将服务端 ComponentData 转换为 store 需要的 ComponentInfoType
     // 服务端的 id 作为前端的 fe_id 使用
@@ -49,6 +50,10 @@ function useLoadQuestionData() {
     dispatch(
       resetComponents({ componentList: newComponentList, selectedId, copiedComponent: null })
     )
+
+    // 把 pageInfo 存储到 redux store
+    // QuestionData 没有 js/css 字段，用空字符串兜底
+    dispatch(resetPageInfo({ title, desc, js: '', css: '' }))
   }, [data])
 
   // 判断 id 变化，执行 ajax 加载问卷数据
@@ -56,7 +61,7 @@ function useLoadQuestionData() {
     run(id)
   }, [id])
 
-  return { loading, error }
+  return { loading }
 }
 
 export default useLoadQuestionData
