@@ -28,6 +28,7 @@
     "react-dom": "^19.2.6",
     "react-redux": "^9.3.0",
     "react-router-dom": "^7.16.0",
+    "redux-undo": "^1.1.0",
     "sass": "^1.100.0",
     "styled-components": "^6.4.2"
   },
