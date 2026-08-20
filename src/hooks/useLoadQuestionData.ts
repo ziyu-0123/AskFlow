@@ -27,7 +27,7 @@ function useLoadQuestionData() {
   useEffect(() => {
     if (!data) return
 
-    const { title = '', desc = '', componentList = [] } = data
+    const { title = '', desc = '', isPublished = false, componentList = [] } = data
 
     // 将服务端 ComponentData 转换为 store 需要的 ComponentInfoType
     // 服务端的 id 作为前端的 fe_id 使用
@@ -53,7 +53,7 @@ function useLoadQuestionData() {
 
     // 把 pageInfo 存储到 redux store
     // QuestionData 没有 js/css 字段，用空字符串兜底
-    dispatch(resetPageInfo({ title, desc, js: '', css: '' }))
+    dispatch(resetPageInfo({ title, desc, js: '', css: '', isPublished }))
   }, [data])
 
   // 判断 id 变化，执行 ajax 加载问卷数据
