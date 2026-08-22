@@ -11,7 +11,7 @@ type SearchOption = {
 export type ComponentType = 'questionTitle' | 'questionInput'
 
 export interface ComponentData {
-  id: string
+  fe_id: string
   type: ComponentType
   title: string
   props: Record<string, unknown>

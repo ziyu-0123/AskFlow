@@ -30,11 +30,11 @@ function useLoadQuestionData() {
     const { title = '', desc = '', isPublished = false, componentList = [] } = data
 
     // 将服务端 ComponentData 转换为 store 需要的 ComponentInfoType
-    // 服务端的 id 作为前端的 fe_id 使用
+    // 服务端直接返回 fe_id
     const newComponentList = componentList.map(c => {
-      const { id, type, title, props } = c
+      const { fe_id, type, title, props } = c
       return {
-        fe_id: id,
+        fe_id,
         type,
         title,
         props: props as ComponentPropsType,

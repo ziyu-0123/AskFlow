@@ -2,6 +2,11 @@ import axios from 'axios'
 import { message } from 'antd'
 import { getToken } from '../utils/user-token'
 
+// 统一响应数据类型（响应拦截器解包后返回的 data 部分）
+export type ResDataType = {
+  [key: string]: unknown
+}
+
 const instance = axios.create({
   timeout: 10 * 1000,
 })
