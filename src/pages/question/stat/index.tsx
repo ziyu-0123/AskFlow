@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { type FC, useState } from 'react'
 import useLoadQuestionData from '../../../hooks/useLoadQuestionData'
 import { Spin, Result, Button } from 'antd'
 import useGetPageInfo from '../../../hooks/useGetPageInfo'
@@ -6,11 +6,16 @@ import { useNavigate } from 'react-router-dom'
 import { useTitle } from 'ahooks'
 import styles from './index.module.scss'
 import StatHeader from './StatHeader'
+import ComponentList from './ComponentList'
 
 const Stat: FC = () => {
   const nav = useNavigate()
   const { loading } = useLoadQuestionData()
   const { title, isPublished } = useGetPageInfo()
+
+  // 状态提升
+  const [selectedComponentId, setSelectedComponentId] = useState('')
+  const [selectedComponentType, setSelectedComponentType] = useState('')
 
   // 修改标题
   useTitle(`问卷统计 - ${title}`)
@@ -42,9 +47,15 @@ const Stat: FC = () => {
 
     return (
       <>
-        <div className={styles.left}>左</div>
+        <div className={styles.left}>
+          <ComponentList
+            selectedComponentId={selectedComponentId}
+            setSelectedComponentId={setSelectedComponentId}
+            setSelectedComponentType={setSelectedComponentType}
+          />
+        </div>
         <div className={styles.main}>中</div>
-        <div className={styles.right}>右</div>
+        <div className={styles.right}>{selectedComponentType || '未选中组件'}</div>
       </>
     )
   }
