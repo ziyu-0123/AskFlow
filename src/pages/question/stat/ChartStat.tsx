@@ -3,6 +3,7 @@ import { Typography } from 'antd'
 import { getComponentStatService } from '../../../services/stat'
 import { useRequest } from 'ahooks'
 import { useParams } from 'react-router-dom'
+import { getComponentConfByType } from '../../../components/QuestionComponents'
 
 const { Title } = Typography
 
@@ -12,16 +13,16 @@ type PropsType = {
 }
 
 const ChartStat: FC<PropsType> = (props: PropsType) => {
-  const { selectedComponentId } = props
+  const { selectedComponentId, selectedComponentType } = props
   const { id = '' } = useParams()
 
-  const [stat, setStat] = useState<Record<string, unknown>[]>([])
+  const [stat, setStat] = useState<{ name: string; count: number }[]>([])
   const { run } = useRequest(
     async (questionId, componentId) => await getComponentStatService(questionId, componentId),
     {
       manual: true,
       onSuccess(res) {
-        const { stat = [] } = res as { stat?: Record<string, unknown>[] }
+        const { stat = [] } = res as { stat?: { name: string; count: number }[] }
         setStat(stat)
       },
     }
@@ -35,7 +36,10 @@ const ChartStat: FC<PropsType> = (props: PropsType) => {
   function genStatElem() {
     if (!selectedComponentId) return <div>未选中组件</div>
 
-    return <div>{JSON.stringify(stat)}</div>
+    const { StatComponent } = getComponentConfByType(selectedComponentType) || {}
+    if (StatComponent == null) return <div>该组件无统计图表</div>
+
+    return <StatComponent stat={stat} />
   }
 
   return (
