@@ -1,8 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { ComponentPropsType } from '../../components/QuestionComponents'
 import { getNextSelectedId, insertNewComponent } from './utils'
-import cloneDeep from 'lodash.clonedeep'
 import { nanoid } from 'nanoid'
 import { arrayMove } from '@dnd-kit/sortable'
 
@@ -112,7 +111,9 @@ export const componentsSlice = createSlice({
       const { selectedId, componentList = [] } = state
       const selectedComponent = componentList.find(c => c.fe_id === selectedId)
       if (selectedComponent == null) return
-      state.copiedComponent = cloneDeep(selectedComponent) // 深拷贝
+      // current() 解包 Immer draft 得到 plain object，再用 structuredClone 深拷贝
+      // （structuredClone 不能直接克隆 Immer Proxy，会抛 DataCloneError）
+      state.copiedComponent = structuredClone(current(selectedComponent))
     },
     // 粘贴
     pasteCopiedComponent: (state: ComponentsStateType) => {
