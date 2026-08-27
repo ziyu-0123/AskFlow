@@ -29,7 +29,7 @@ const ManageLayout: FC = () => {
   } = useRequest(createQuestionService, {
     manual: true,
     onSuccess(result) {
-      nav(`/question/edit/${result._id}`)
+      nav(`/question/edit/${result.id}`)
       message.success('创建成功')
     },
   })

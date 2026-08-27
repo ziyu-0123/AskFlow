@@ -1,17 +1,38 @@
 import { createBrowserRouter } from 'react-router-dom'
+import { lazy, Suspense, type ComponentType, type ReactElement } from 'react'
+import { Spin } from 'antd'
 
+// 主 layout 作为根 shell 保持 eager（每个页面都要经过它）
 import MainLayout from '../layouts/MainLayout'
-import ManageLayout from '../layouts/ManageLayout'
-import QuestionLayout from '../layouts/QuestionLayout'
-import Home from '../pages/Home'
-import Login from '../pages/Login'
-import Register from '../pages/Register'
-import NotFound from '../pages/NotFound'
-import List from '../pages/manage/List'
-import Trash from '../pages/manage/Trash'
-import Star from '../pages/manage/Star'
-import Edit from '../pages/question/Edit'
-import Stat from '../pages/question/stat'
+
+// 路由级懒加载：每个二级 layout 与页面拆为独立 chunk
+const ManageLayout = lazy(() => import('../layouts/ManageLayout'))
+const QuestionLayout = lazy(() => import('../layouts/QuestionLayout'))
+const Home = lazy(() => import('../pages/Home'))
+const Login = lazy(() => import('../pages/Login'))
+const Register = lazy(() => import('../pages/Register'))
+const NotFound = lazy(() => import('../pages/NotFound'))
+const List = lazy(() => import('../pages/manage/List'))
+const Trash = lazy(() => import('../pages/manage/Trash'))
+const Star = lazy(() => import('../pages/manage/Star'))
+const Edit = lazy(() => import('../pages/question/Edit'))
+const Stat = lazy(() => import('../pages/question/stat'))
+
+// chunk 加载态：居中 Spin，与 MainLayout 内置 loading 视觉一致
+const fallback = (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+    <Spin />
+  </div>
+)
+
+// 用 Suspense 包裹懒加载组件，统一处理 chunk 加载态
+function withSuspense(Comp: ComponentType): ReactElement {
+  return (
+    <Suspense fallback={fallback}>
+      <Comp />
+    </Suspense>
+  )
+}
 
 const router = createBrowserRouter([
   {
@@ -20,51 +41,51 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />,
+        element: withSuspense(Home),
       },
       {
         path: 'login',
-        element: <Login />,
+        element: withSuspense(Login),
       },
       {
         path: 'register',
-        element: <Register />,
+        element: withSuspense(Register),
       },
       {
         path: 'manage',
-        element: <ManageLayout />,
+        element: withSuspense(ManageLayout),
         children: [
           {
             path: 'list',
-            element: <List />,
+            element: withSuspense(List),
           },
           {
             path: 'star',
-            element: <Star />,
+            element: withSuspense(Star),
           },
           {
             path: 'trash',
-            element: <Trash />,
+            element: withSuspense(Trash),
           },
         ],
       },
       {
         path: '*',
-        element: <NotFound />,
+        element: withSuspense(NotFound),
       },
     ],
   },
   {
     path: 'question',
-    element: <QuestionLayout />,
+    element: withSuspense(QuestionLayout),
     children: [
       {
         path: 'edit/:id',
-        element: <Edit />,
+        element: withSuspense(Edit),
       },
       {
         path: 'stat/:id',
-        element: <Stat />,
+        element: withSuspense(Stat),
       },
     ],
   },
