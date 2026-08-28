@@ -9,7 +9,7 @@ const QuestionCheckbox: FC<QuestionCheckboxPropsType> = props => {
   return (
     <div>
       <Paragraph strong>{title}</Paragraph>
-      <Space direction={isVertical ? 'vertical' : 'horizontal'}>
+      <Space orientation={isVertical ? 'vertical' : 'horizontal'}>
         {list.map(opt => {
           const { value, text, checked } = opt
           return (

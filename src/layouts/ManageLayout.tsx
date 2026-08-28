@@ -39,7 +39,7 @@ const ManageLayout: FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.left}>
-        <Space direction="vertical">
+        <Space orientation="vertical">
           <Button
             type="primary"
             size="large"
