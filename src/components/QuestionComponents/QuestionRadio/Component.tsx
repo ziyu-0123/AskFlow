@@ -4,7 +4,7 @@ import { type QuestionRadioPropsType, QuestionRadioDefaultProps } from './interf
 
 const { Paragraph } = Typography
 
-const QuestionRadio: FC = (props: QuestionRadioPropsType) => {
+const QuestionRadio: FC<QuestionRadioPropsType> = props => {
   const { title, options = [], value, isVertical } = { ...QuestionRadioDefaultProps, ...props }
 
   return (
