@@ -5,7 +5,7 @@ import type { QuestionParagraphPropsType } from './interface'
 
 const { Paragraph } = Typography
 
-const Component: FC = (props: QuestionParagraphPropsType) => {
+const Component: FC<QuestionParagraphPropsType> = props => {
   const { text = '', isCenter = false } = { ...QuestionParagraphDefaultProps, ...props }
 
   const textList = text.split('\n')
