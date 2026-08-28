@@ -5,7 +5,7 @@ import { QuestionInfoDefaultProps } from './interface'
 
 const { Title, Paragraph } = Typography
 
-const Component: FC = (props: QuestionInfoPropsType) => {
+const Component: FC<QuestionInfoPropsType> = props => {
   const { title, desc = '' } = { ...QuestionInfoDefaultProps, ...props }
 
   const descTextList = desc.split('\n')

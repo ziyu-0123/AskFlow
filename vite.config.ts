@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -12,6 +13,13 @@ export default defineConfig({
         // rewrite: (path) => path        // 不重写路径，保持 /api 前缀
       },
     },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.ts',
+    // Windows 下 forks 池容易 worker 启动超时，改用 threads 池
+    pool: 'threads',
   },
   build: {
     rollupOptions: {
