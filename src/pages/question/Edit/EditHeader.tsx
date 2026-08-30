@@ -1,4 +1,4 @@
-import { type FC, useState, type ChangeEvent } from 'react'
+import { type FC, useState, type ChangeEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styles from './EditHeader.module.scss'
 import { Button, Typography, Space, Input, message } from 'antd'
@@ -9,7 +9,7 @@ import { changePageTitle } from '../../../store/pageInfoReducer'
 import { useDispatch } from 'react-redux'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
 import { updateQuestionService } from '../../../services/question'
-import { useRequest, useKeyPress, useDebounceEffect } from 'ahooks'
+import { useRequest, useKeyPress, useDebounceFn, useUnmount } from 'ahooks'
 
 const { Title } = Typography
 
@@ -20,9 +20,8 @@ const TitleElem: FC = () => {
   const [editState, SetEditState] = useState(false)
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const newTitle = event.target.value.trim()
-    if (!newTitle) return
-    dispatch(changePageTitle(newTitle))
+    // 受控输入须始终跟随用户输入，否则删空时会被 Redux 旧值覆盖、出现"删不掉"的现象
+    dispatch(changePageTitle(event.target.value.trim()))
   }
 
   if (editState) {
@@ -58,22 +57,21 @@ const SaveButton: FC = () => {
     { manual: true }
   )
 
+  // 自动保存（防抖 1s）。组件卸载时立即 flush 待执行的保存，
+  // 避免编辑后直接点"返回"导致 debounce 被取消、改动丢失
+  const { run: debouncedSave, flush } = useDebounceFn(() => save(), { wait: 1000 })
+  useEffect(() => {
+    debouncedSave()
+  }, [componentList, pageInfo])
+  useUnmount(() => {
+    flush()
+  })
+
   // 快捷键
   useKeyPress(['ctrl.s', 'meta.s'], (event: KeyboardEvent) => {
     event.preventDefault()
     if (!loading) save()
   })
-
-  // 自动保存（不是定期保存，不是定时器）
-  useDebounceEffect(
-    () => {
-      save()
-    },
-    [componentList, pageInfo],
-    {
-      wait: 1000,
-    }
-  )
 
   return (
     <Button onClick={save} disabled={loading} icon={loading ? <LoadingOutlined /> : null}>

@@ -37,13 +37,19 @@ export interface QuestionListData {
   total: number
 }
 
+// 后端 Mongoose 默认 toJSON 不带 id 虚拟字段，只有 _id。
+// 这里统一把 _id 归一为 id，避免列表页拿不到 id 导致路由到 /question/edit/undefined
+function normalizeQuestion(q: QuestionData): QuestionData {
+  return { ...q, id: q.id || q._id || '' }
+}
+
 // 获取单个问卷信息
 export async function getQuestionService(id: string): Promise<QuestionData> {
   const url = `/api/question/${id}`
 
   // 直接断言为 QuestionData
   const data = (await axios.get(url)) as QuestionData
-  return data
+  return normalizeQuestion(data)
 }
 
 // 创建问卷
@@ -60,7 +66,7 @@ export async function getQuestionListService(
 ): Promise<QuestionListData> {
   const url = `/api/question`
   const data = (await axios.get(url, { params: opt })) as QuestionListData
-  return data
+  return { list: data.list.map(normalizeQuestion), total: data.total }
 }
 
 // 更新问卷信息
