@@ -5,9 +5,11 @@ import { Typography, Space, Form, Input, Button, Checkbox, message } from 'antd'
 import { UserAddOutlined } from '@ant-design/icons'
 import { MANAGE_INDEX_PATHNAME, REGISTER_PATHNAME } from '../router'
 import styles from './Login.module.scss'
-import { loginService } from '../services/user'
+import { loginService, getUserInfoService } from '../services/user'
 import { useRequest } from 'ahooks'
 import { setToken } from '../utils/user-token'
+import { useDispatch } from 'react-redux'
+import { loginReducer } from '../store/userReducer'
 
 interface LoginFormValues {
   username: string
@@ -39,6 +41,7 @@ function getUserInfoFromStorage() {
 
 const Login: FC = () => {
   const nav = useNavigate()
+  const dispatch = useDispatch()
   const [form] = Form.useForm()
 
   useEffect(() => {
@@ -53,10 +56,13 @@ const Login: FC = () => {
     },
     {
       manual: true,
-      onSuccess(result) {
+      onSuccess: async result => {
         const { token = '' } = result
         setToken(token)
         message.success('登录成功')
+        // 用新 token 获取用户信息并更新 Redux，防止 useNavPage 弹回登录页
+        const { username, nickname } = await getUserInfoService()
+        dispatch(loginReducer({ username, nickname }))
         nav(MANAGE_INDEX_PATHNAME)
       },
     }

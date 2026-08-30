@@ -26,6 +26,7 @@ type PropsType = {
 // 复制接口返回类型
 interface DuplicateResponse {
   id: string
+  _id?: string // MongoDB 原生 ID，后端可能返回此字段
 }
 
 const QuestionCard: FC<PropsType> = (props: PropsType) => {
@@ -63,7 +64,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
       manual: true,
       onSuccess(result: DuplicateResponse) {
         message.success('复制成功')
-        nav(`/question/edit/${result.id}`)
+        nav(`/question/edit/${result.id || result._id}`)
       },
     }
   )

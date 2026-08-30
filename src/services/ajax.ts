@@ -8,7 +8,9 @@ export type ResDataType = {
 }
 
 const instance = axios.create({
+  baseURL: 'http://localhost:3005/',
   timeout: 10 * 1000,
+  headers: {},
 })
 
 // request 拦截: 每次请求都带上 token

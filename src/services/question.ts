@@ -20,6 +20,7 @@ export interface ComponentData {
 // 单个问卷类型
 export interface QuestionData {
   id: string
+  _id?: string // MongoDB 原生 ID，后端可能返回此字段
   title: string
   desc?: string // 可选，可能没有
   isPublished: boolean
