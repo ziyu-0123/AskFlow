@@ -2,15 +2,13 @@ import type { FC } from 'react'
 import { useTitle, useRequest } from 'ahooks'
 import { useState } from 'react'
 import styles from './common.module.scss'
-import { Typography, Empty, Table, Tag, Button, Space, Modal, message, Spin } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Typography, Empty, Table, Tag, Button, Space, Popconfirm, message, Spin } from 'antd'
 import ListSearch from '../../components/ListSearch'
 import ListPage from '../../components/ListPage'
 import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
 import { updateQuestionService, deleteQuestionService } from '../../services/question'
 
 const { Title } = Typography
-const { confirm } = Modal
 
 const Trash: FC = () => {
   const { list, loading, total, refresh } = useLoadQuestionListData({ isDeleted: true })
@@ -44,17 +42,6 @@ const Trash: FC = () => {
     },
   })
 
-  function del() {
-    confirm({
-      title: '确认彻底删除该问卷?',
-      icon: <ExclamationCircleOutlined />,
-      content: '删除后无法找回',
-      onOk: deleteQuestion,
-      okText: '确认',
-      cancelText: '取消',
-    })
-  }
-
   const tableColumns = [
     {
       title: '标题',
@@ -86,9 +73,19 @@ const Trash: FC = () => {
           <Button disabled={selectedIds.length === 0} onClick={recover}>
             恢复
           </Button>
-          <Button danger disabled={selectedIds.length === 0} onClick={del}>
-            删除
-          </Button>
+          <Popconfirm
+            title="确认彻底删除该问卷?"
+            description="删除后无法找回"
+            okText="确认"
+            cancelText="取消"
+            okButtonProps={{ danger: true }}
+            disabled={selectedIds.length === 0}
+            onConfirm={deleteQuestion}
+          >
+            <Button danger disabled={selectedIds.length === 0}>
+              删除
+            </Button>
+          </Popconfirm>
         </Space>
       </div>
       <Table
