@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Typography } from 'antd'
 import { MANAGE_INDEX_PATHNAME } from '../router'
 import styles from './Home.module.scss'
-// import '../_mock/index'
 import axios from 'axios'
 
 const { Title, Paragraph } = Typography
