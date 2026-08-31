@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Button, Space, Divider, Tag, Popconfirm, message, Modal } from 'antd'
+import { Button, Space, Divider, Tag, Popconfirm, message } from 'antd'
 import { useNavigate, Link } from 'react-router-dom'
 import {
   EditOutlined,
@@ -8,7 +8,6 @@ import {
   StarOutlined,
   CopyOutlined,
   DeleteOutlined,
-  ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import styles from './QuestionCard.module.scss'
 import { updateQuestionService, duplicateQuestionService } from '../services/question'
@@ -82,16 +81,6 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
     }
   )
 
-  function del() {
-    Modal.confirm({
-      title: '确认删除该问卷?',
-      icon: <ExclamationCircleOutlined />,
-      onOk: deleteQuestion,
-      okText: '确认',
-      cancelText: '取消',
-    })
-  }
-
   // 已经删除的卡片不要渲染
   if (isDeletedState) return null
 
@@ -164,15 +153,16 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
                 复制
               </Button>
             </Popconfirm>
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              size="small"
-              disabled={deleteLoading}
-              onClick={del}
+            <Popconfirm
+              title="确认删除该问卷?"
+              okText="确定"
+              cancelText="取消"
+              onConfirm={deleteQuestion}
             >
-              删除
-            </Button>
+              <Button type="text" icon={<DeleteOutlined />} size="small" disabled={deleteLoading}>
+                删除
+              </Button>
+            </Popconfirm>
           </Space>
         </div>
       </div>
