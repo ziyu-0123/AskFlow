@@ -4,11 +4,9 @@ import { type QuestionCheckboxStatPropsType } from './interface'
 
 const StatComponent: FC<QuestionCheckboxStatPropsType> = ({ stat }) => {
   return (
-    <div style={{ width: '400px', height: '300px' }}>
+    <div style={{ width: '100%', height: '300px' }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          width={400}
-          height={300}
           data={stat}
           margin={{
             top: 5,
