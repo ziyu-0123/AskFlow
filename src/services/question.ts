@@ -40,8 +40,23 @@ export interface QuestionListData {
 // 后端 Mongoose 默认 toJSON 不带 id 虚拟字段，只有 _id。
 // 这里统一把 _id 归一为 id，避免列表页拿不到 id 导致路由到 /question/edit/undefined
 function normalizeQuestion(q: QuestionData): QuestionData {
-  // 存量数据可能没有 answerCount 字段，兜底为 0
-  return { ...q, id: q.id || q._id || '', answerCount: q.answerCount ?? 0 }
+  return {
+    ...q,
+    id: q.id || q._id || '',
+    // 存量数据可能没有 answerCount 字段，兜底为 0
+    answerCount: q.answerCount ?? 0,
+    // 后端返回 ISO 原始字符串（如 2026-08-31T11:26:28.547Z），格式化为本地时间
+    createdAt: formatDateTime(q.createdAt),
+  }
+}
+
+// 格式化为 YYYY-MM-DD HH:mm
+function formatDateTime(iso?: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
 // 获取单个问卷信息
