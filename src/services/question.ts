@@ -40,7 +40,8 @@ export interface QuestionListData {
 // 后端 Mongoose 默认 toJSON 不带 id 虚拟字段，只有 _id。
 // 这里统一把 _id 归一为 id，避免列表页拿不到 id 导致路由到 /question/edit/undefined
 function normalizeQuestion(q: QuestionData): QuestionData {
-  return { ...q, id: q.id || q._id || '' }
+  // 存量数据可能没有 answerCount 字段，兜底为 0
+  return { ...q, id: q.id || q._id || '', answerCount: q.answerCount ?? 0 }
 }
 
 // 获取单个问卷信息
