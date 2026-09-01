@@ -61,8 +61,8 @@ const Login: FC = () => {
         setToken(token)
         message.success('登录成功')
         // 用新 token 获取用户信息并更新 Redux，防止 useNavPage 弹回登录页
-        const { username, nickname } = await getUserInfoService()
-        dispatch(loginReducer({ username, nickname }))
+        const { username, nickname, aiConfigured = false } = await getUserInfoService()
+        dispatch(loginReducer({ username, nickname, aiConfigured }))
         nav(MANAGE_INDEX_PATHNAME)
       },
     }
