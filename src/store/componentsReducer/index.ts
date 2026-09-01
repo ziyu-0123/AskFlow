@@ -77,17 +77,11 @@ export const componentsSlice = createSlice({
       const { componentList = [] } = state
       const { fe_id, isHidden } = action.payload
 
-      // 重新计算 selectedId
-      let newSelectedId = ''
-      if (isHidden) {
-        // 要隐藏
-        newSelectedId = getNextSelectedId(fe_id, componentList)
-      } else {
-        // 要显示
-        newSelectedId = fe_id
+      // 显示时选中该组件；隐藏时保持当前选中不变，
+      // 否则工具栏的隐藏按钮无法再次点击恢复（选中会被切到下一个组件）
+      if (!isHidden) {
+        state.selectedId = fe_id
       }
-
-      state.selectedId = newSelectedId
 
       const curComp = componentList.find(c => c.fe_id === fe_id)
       if (curComp) {

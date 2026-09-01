@@ -8,12 +8,21 @@ type SearchOption = {
   pageSize: number
 }
 
-export type ComponentType = 'questionTitle' | 'questionInput'
+export type ComponentType =
+  | 'questionInfo'
+  | 'questionTitle'
+  | 'questionParagraph'
+  | 'questionInput'
+  | 'questionTextarea'
+  | 'questionRadio'
+  | 'questionCheckbox'
 
 export interface ComponentData {
   fe_id: string
   type: ComponentType
   title: string
+  isHidden?: boolean
+  isLocked?: boolean
   props: Record<string, unknown>
 }
 

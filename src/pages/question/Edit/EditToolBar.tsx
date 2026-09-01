@@ -27,7 +27,7 @@ const EditToolBar: FC = () => {
   const dispatch = useDispatch()
   const { selectedId, componentList, selectedComponent, copiedComponent } = useGetComponentInfo()
   if (selectedComponent == null) return null
-  const { isLocked } = selectedComponent
+  const { isLocked, isHidden } = selectedComponent
   const length = componentList.length
   const selectedIndex = componentList.findIndex(c => c.fe_id === selectedId)
   const isFirst = selectedIndex <= 0 // 第一个
@@ -38,9 +38,9 @@ const EditToolBar: FC = () => {
     dispatch(removeSelectedComponent())
   }
 
-  // 隐藏组件
+  // 隐藏/显示组件（切换：隐藏后再点一次恢复显示）
   function handleHidden() {
-    dispatch(changeComponentHidden({ fe_id: selectedId, isHidden: true }))
+    dispatch(changeComponentHidden({ fe_id: selectedId, isHidden: !isHidden }))
   }
 
   // 锁定组件
@@ -85,8 +85,13 @@ const EditToolBar: FC = () => {
       <Tooltip title="删除">
         <Button shape="circle" icon={<DeleteOutlined />} onClick={handleDelete}></Button>
       </Tooltip>
-      <Tooltip title="隐藏">
-        <Button shape="circle" icon={<EyeInvisibleOutlined />} onClick={handleHidden}></Button>
+      <Tooltip title={isHidden ? '显示' : '隐藏'}>
+        <Button
+          shape="circle"
+          icon={<EyeInvisibleOutlined />}
+          onClick={handleHidden}
+          type={isHidden ? 'primary' : 'default'}
+        ></Button>
       </Tooltip>
       <Tooltip title="锁定">
         <Button

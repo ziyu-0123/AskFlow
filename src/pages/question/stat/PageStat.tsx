@@ -42,29 +42,32 @@ const PageStat: FC<PropsType> = (props: PropsType) => {
   )
 
   const { componentList } = useGetComponentInfo()
-  const columns = componentList.map(c => {
-    const { fe_id, title, props = {}, type } = c
+  // 表格只展示可见组件（与左侧预览的过滤规则一致）
+  const columns = componentList
+    .filter(c => !c.isHidden)
+    .map(c => {
+      const { fe_id, title, props = {}, type } = c
 
-    const colTitle = props!.title || title
+      const colTitle = props!.title || title
 
-    return {
-      // title: colTitle,
-      title: (
-        <div
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            setSelectedComponentId(fe_id)
-            setSelectedComponentType(type)
-          }}
-        >
-          <span style={{ color: fe_id === selectedComponentId ? '#1890ff' : 'inherit' }}>
-            {colTitle}
-          </span>
-        </div>
-      ),
-      dataIndex: fe_id,
-    }
-  })
+      return {
+        // title: colTitle,
+        title: (
+          <div
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              setSelectedComponentId(fe_id)
+              setSelectedComponentType(type)
+            }}
+          >
+            <span style={{ color: fe_id === selectedComponentId ? '#1890ff' : 'inherit' }}>
+              {colTitle}
+            </span>
+          </div>
+        ),
+        dataIndex: fe_id,
+      }
+    })
 
   const dataSource = list.map(i => ({ ...i, key: i._id }))
   const TableElem = (

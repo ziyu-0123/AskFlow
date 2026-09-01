@@ -31,12 +31,16 @@ function useLoadQuestionData() {
 
     // 将服务端 ComponentData 转换为 store 需要的 ComponentInfoType
     // 服务端直接返回 fe_id
+    // 注意保留 isHidden/isLocked：丢失会导致隐藏状态在统计页失效，
+    // 且编辑页自动保存时把 undefined 写回 DB 覆盖已保存的隐藏/锁定状态
     const newComponentList = componentList.map(c => {
-      const { fe_id, type, title, props } = c
+      const { fe_id, type, title, isHidden, isLocked, props } = c
       return {
         fe_id,
         type,
         title,
+        isHidden,
+        isLocked,
         props: props as ComponentPropsType,
       }
     })
