@@ -88,6 +88,16 @@ ManageLayout 侧边栏 [AI 生成问卷] 按钮
 
 ## 五、阶段 1：用户 AI 配置链路（详细设计）
 
+### 开发进度记录
+
+> 完成细节见对话说明（按开发契约第 5 条，不再回写文档），此处仅维护状态。
+
+| 开发点 | 状态 | 完成时间 | 备注 |
+|---|---|---|---|
+| 1-1 User schema 加 aiConfig + PATCH /api/user/ai-config | ✅ 已完成 | 2026-08-31 | 附带修复 JWT 载荷泄露隐患；嵌套字段抽为 AiConfig 类 |
+| 1-2 profile 接口扩展（返回打码 aiConfig + aiConfigured） | ⬜ 待开发 | — | 下一个开发点 |
+| 1-3 前端：UserInfo 昵称下拉菜单 + AISettingsModal | ⬜ 待开发 | — | |
+
 ### 5.1 数据模型扩展
 
 `User` schema 新增可选字段：
