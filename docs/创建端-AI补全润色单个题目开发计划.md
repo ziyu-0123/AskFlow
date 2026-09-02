@@ -113,9 +113,9 @@ ComponentProp 面板顶部 [🤖 AI 优化] 按钮（isLocked || isHidden 时 di
 
 | 开发点 | 状态 | 完成时间 | 备注 |
 |---|---|---|---|
-| 2-1 后端：schema 抽取 + optimizeComponent + POST /api/ai/optimize-component | ⬜ 待开发 | — | 下一个开发点 |
-| 2-2 前端：AI 优化按钮 + OptimizePreviewModal + 未配置引导 | ⬜ 待开发 | — | |
-| 2-3 联调验收 | ⬜ 待开发 | — | 用户用真实 Key 验收 |
+| 2-1 后端：schema 抽取 + optimizeComponent + POST /api/ai/optimize-component | ✅ 已完成 | 2026-09-02 | 抽取 COMPONENT_CONTRACT / chatWithRetry / normalizeOptions；未建独立 schema 与 DTO 文件（内联更简） |
+| 2-2 前端：AI 优化按钮 + OptimizePreviewModal + 未配置引导 | ✅ 已完成 | 2026-09-02 | 修复快照闭包漂移（快照在请求函数内确定）与撤销两步问题（props+title 合并单 action） |
+| 2-3 联调验收 | ✅ 已完成 | 2026-09-02 | 用户真实 Key 验收通过（含快照/撤销/错误分支/回归） |
 
 ### 开发点 2-1：后端（question-server-nestjs）
 

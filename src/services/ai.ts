@@ -24,3 +24,16 @@ export async function generateQuestionService(prompt: string): Promise<AiGenerat
   const data = (await axios.post(url, { prompt }, { timeout: 60 * 1000 })) as AiGeneratedQuestion
   return data
 }
+
+// 补全/润色单个问卷组件（纯生成，不落库），返回优化后的 props
+// 与生成问卷共用放宽超时
+export async function optimizeComponentService(component: {
+  type: string
+  props: Record<string, unknown>
+}): Promise<{ props: Record<string, unknown> }> {
+  const url = `/api/ai/optimize-component`
+  const data = (await axios.post(url, { component }, { timeout: 60 * 1000 })) as {
+    props: Record<string, unknown>
+  }
+  return data
+}

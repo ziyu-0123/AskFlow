@@ -43,12 +43,12 @@ export const componentsSlice = createSlice({
       const newComponent = action.payload
       insertNewComponent(state, newComponent)
     },
-    // 修改组件属性
+    // 修改组件属性（可选 title：题干变化时同步图层面板标题，合并为一次 action 保证单步撤销）
     changeComponentProps: (
       state: ComponentsStateType,
-      action: PayloadAction<{ fe_id: string; newProps: ComponentPropsType }>
+      action: PayloadAction<{ fe_id: string; newProps: ComponentPropsType; title?: string }>
     ) => {
-      const { fe_id, newProps } = action.payload
+      const { fe_id, newProps, title } = action.payload
       // 找到当前要修改属性的组件
       const curComp = state.componentList.find(c => c.fe_id === fe_id)
       if (curComp) {
@@ -56,6 +56,7 @@ export const componentsSlice = createSlice({
           ...curComp.props,
           ...newProps,
         }
+        if (title != null) curComp.title = title
       }
     },
     // 删除选中的组件
