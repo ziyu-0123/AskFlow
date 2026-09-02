@@ -72,3 +72,25 @@ export async function translateQuestionService(
   )) as TranslateQuestionResult
   return data
 }
+
+// AI 总结开放式答案的响应（意见聚类 + 情感一次产出；count 为 AI 估算值）
+export type SummarizeAnswersResult = {
+  summary: string
+  totalCount: number
+  themes: { label: string; count: number; description: string }[]
+  sentiment: { positive: number; negative: number; neutral: number }
+}
+
+// AI 总结开放式问题的答案（纯生成，不落库；后端自行拉取答卷并预处理）
+export async function summarizeAnswersService(
+  questionId: string,
+  componentId: string
+): Promise<SummarizeAnswersResult> {
+  const url = `/api/ai/summarize-answers`
+  const data = (await axios.post(
+    url,
+    { questionId, componentId },
+    { timeout: 60 * 1000 }
+  )) as SummarizeAnswersResult
+  return data
+}

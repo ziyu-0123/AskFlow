@@ -4,6 +4,7 @@ import { getComponentStatService } from '../../../services/stat'
 import { useRequest } from 'ahooks'
 import { useParams } from 'react-router-dom'
 import { getComponentConfByType } from '../../../components/QuestionComponents'
+import AiSummaryCard from './AiSummaryCard'
 
 const { Title } = Typography
 
@@ -35,6 +36,11 @@ const ChartStat: FC<PropsType> = (props: PropsType) => {
   // 生成统计图表
   function genStatElem() {
     if (!selectedComponentId) return <div>未选中组件</div>
+
+    // 开放式问题无统计图表，用 AI 总结卡片占住该空态（意见聚类 + 情感分布）
+    if (selectedComponentType === 'questionInput' || selectedComponentType === 'questionTextarea') {
+      return <AiSummaryCard questionId={id} componentId={selectedComponentId} />
+    }
 
     const { StatComponent } = getComponentConfByType(selectedComponentType) || {}
     if (StatComponent == null) return <div>该组件无统计图表</div>

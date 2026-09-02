@@ -1,7 +1,7 @@
 # 分析端：AI 总结开放式答案 — 开发计划
 
 > 依据：[AI功能需求文档.md](./AI功能需求文档.md) 第 3 节功能点 7
-> 状态：**开发中（详细设计已展开并确认 4 个细节点，待开发 4-1）**
+> 状态：**已完成（2026-09-02，4-1~4-3 全部交付）**
 > 前置依赖：功能点 1/2/3 已完成（AiService 基础设施、用户自带 Key、未配置引导链路均已就绪）
 
 ## 〇、已确认的关键决策
@@ -80,9 +80,9 @@
 
 | 开发点 | 状态 | 完成时间 | 备注 |
 |---|---|---|---|
-| 4-1 后端：summarizeAnswersSchema + AiService.summarizeAnswers + POST /api/ai/summarize-answers | ⬜ 待开发 | — | 含 author 校验、答案提取与预处理（去重/截断/限量） |
-| 4-2 前端：services/ai.ts + ChartStat 开放式问题 AI 总结卡片 | ⬜ 待开发 | — | 含未配置引导、loading、结果渲染（占比条 + 情感分布） |
-| 4-3 联调验收 | ⬜ 待开发 | — | 用户真实 Key 验收 |
+| 4-1 后端：summarizeAnswersSchema + AiService.summarizeAnswers + POST /api/ai/summarize-answers | ✅ 已完成 | 2026-09-02 | 含 author 校验、答案提取与预处理（去重/截断/限量）；接口级测试 9/9 通过（校验链各分支 + 假 Key 链路验证），真实 Key 归 4-3 |
+| 4-2 前端：services/ai.ts + ChartStat 开放式问题 AI 总结卡片 | ✅ 已完成 | 2026-09-02 | 含未配置引导、loading、结果渲染（占比条 + 情感分布）；卡片抽为独立组件 Stat/AiSummaryCard.tsx，ChartStat 仅加分支 |
+| 4-3 联调验收 | ✅ 已完成 | 2026-09-02 | 接口级测试已随 4-1 完成（9/9）；用户真实 Key 功能测试 5/5 通过（卡片渲染/生成/重新总结/切组件重置/回归/未配置引导） |
 
 ### 开发点 4-1：后端 AI 接口（question-server-nestjs）
 
