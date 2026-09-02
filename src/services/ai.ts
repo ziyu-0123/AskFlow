@@ -37,3 +37,38 @@ export async function optimizeComponentService(component: {
   }
   return data
 }
+
+// 翻译入参投影：只传 { type, props }，剥离 fe_id/title/isHidden/isLocked 等结构字段
+// （props 里的 value/checked 由后端 zod strip 剥离，进提示词的天然是纯文案）
+export type TranslateQuestionInput = {
+  title: string
+  desc: string
+  componentList: {
+    type: string
+    props: Record<string, unknown>
+  }[]
+}
+
+// 翻译响应（与入参同构，仅文案字段为译文）
+export type TranslateQuestionResult = {
+  title: string
+  desc: string
+  componentList: {
+    type: string
+    props: Record<string, unknown>
+  }[]
+}
+
+// 整卷翻译为指定目标语言（纯生成，不落库），译文保存由独立的 PUT translations 接口负责
+export async function translateQuestionService(
+  targetLang: string,
+  question: TranslateQuestionInput
+): Promise<TranslateQuestionResult> {
+  const url = `/api/ai/translate-question`
+  const data = (await axios.post(
+    url,
+    { targetLang, question },
+    { timeout: 60 * 1000 }
+  )) as TranslateQuestionResult
+  return data
+}

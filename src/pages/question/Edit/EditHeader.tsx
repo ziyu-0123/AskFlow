@@ -1,10 +1,12 @@
 import { type FC, useState, type ChangeEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styles from './EditHeader.module.scss'
-import { Button, Typography, Space, Input, message } from 'antd'
-import { LeftOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons'
+import { Button, Typography, Space, Input, Modal, message } from 'antd'
+import { LeftOutlined, EditOutlined, LoadingOutlined, GlobalOutlined } from '@ant-design/icons'
 import EditToolBar from './EditToolBar'
+import AITranslateModal from './AITranslateModal'
 import useGetPageInfo from '../../../hooks/useGetPageInfo'
+import useGetUserInfo from '../../../hooks/useGetUserInfo'
 import { changePageTitle } from '../../../store/pageInfoReducer'
 import { useDispatch } from 'react-redux'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
@@ -80,6 +82,34 @@ const SaveButton: FC = () => {
   )
 }
 
+// AI 翻译按钮
+const TranslateButton: FC = () => {
+  const { aiConfigured } = useGetUserInfo()
+  const { componentList = [] } = useGetComponentInfo()
+  const [open, setOpen] = useState(false)
+
+  function handleClick() {
+    if (!aiConfigured) {
+      Modal.warning({
+        title: '请先配置 AI 模型',
+        content: '使用 AI 翻译需先配置 API Key，请点击顶部昵称 → AI 设置完成配置',
+        okText: '知道了',
+      })
+      return
+    }
+    setOpen(true)
+  }
+
+  return (
+    <>
+      <Button icon={<GlobalOutlined />} onClick={handleClick} disabled={componentList.length === 0}>
+        AI 翻译
+      </Button>
+      <AITranslateModal open={open} onClose={() => setOpen(false)} />
+    </>
+  )
+}
+
 // 发布按钮
 const PublishButton: FC = () => {
   const nav = useNavigate()
@@ -137,6 +167,7 @@ const EditHeader: FC = () => {
         </div>
         <div className={styles.right}>
           <Space>
+            <TranslateButton />
             <SaveButton />
             <PublishButton />
           </Space>

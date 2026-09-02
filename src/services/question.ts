@@ -26,6 +26,25 @@ export interface ComponentData {
   props: Record<string, unknown>
 }
 
+// 单个组件的文案译文（按 fe_id 索引，仅含该组件类型有文案值的字段）
+export interface ComponentTextTranslation {
+  title?: string
+  desc?: string
+  text?: string
+  placeholder?: string
+  options?: string[] // questionRadio 选项 text 数组，顺序与主版本一致
+  list?: string[] // questionCheckbox 选项 text 数组，顺序与主版本一致
+}
+
+// 单个语言的整卷译文：只存"文案差异"，不存结构
+export interface QuestionTranslation {
+  title: string
+  desc: string
+  texts: {
+    [fe_id: string]: ComponentTextTranslation
+  }
+}
+
 // 单个问卷类型
 export interface QuestionData {
   id: string
@@ -38,6 +57,9 @@ export interface QuestionData {
   createdAt: string
   updatedAt?: string // 可选
   componentList?: ComponentData[]
+  translations?: {
+    [lang: string]: QuestionTranslation
+  }
 }
 
 // 问卷列表类型
@@ -101,6 +123,17 @@ export async function updateQuestionService(
 ): Promise<QuestionListData> {
   const url = `/api/question/${id}`
   const data = (await axios.patch(url, opt)) as QuestionListData
+  return data
+}
+
+// 保存某语言的整卷译文（需登录 + 仅作者；已有译文覆盖更新）
+export async function updateTranslationsService(
+  id: string,
+  lang: string,
+  translation: QuestionTranslation
+): Promise<null> {
+  const url = `/api/question/${id}/translations`
+  const data = (await axios.put(url, { lang, translation })) as null
   return data
 }
 
