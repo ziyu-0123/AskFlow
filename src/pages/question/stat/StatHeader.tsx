@@ -1,17 +1,31 @@
-import { type FC, useRef, useMemo } from 'react'
+import { type FC, useRef, useMemo, useState } from 'react'
 import styles from './StatHeader.module.scss'
 import { useNavigate, useParams } from 'react-router-dom'
-import { message, Space, Button, Typography, Input, Tooltip, Popover, type InputRef } from 'antd'
-import { LeftOutlined, CopyOutlined, QrcodeOutlined } from '@ant-design/icons'
+import {
+  message,
+  Modal,
+  Space,
+  Button,
+  Typography,
+  Input,
+  Tooltip,
+  Popover,
+  type InputRef,
+} from 'antd'
+import { LeftOutlined, CopyOutlined, QrcodeOutlined, FileTextOutlined } from '@ant-design/icons'
 import useGetPageInfo from '../../../hooks/useGetPageInfo'
+import useGetUserInfo from '../../../hooks/useGetUserInfo'
+import AIReportModal from './AIReportModal'
 import { QRCodeCanvas as QRCode } from 'qrcode.react'
 
 const { Title } = Typography
 
 const StatHeader: FC = () => {
   const nav = useNavigate()
-  const { id } = useParams()
+  const { id = '' } = useParams()
   const { title, isPublished } = useGetPageInfo()
+  const { aiConfigured } = useGetUserInfo()
+  const [reportOpen, setReportOpen] = useState(false)
 
   // 拷贝链接
   const urlInputRef = useRef<InputRef>(null)
@@ -89,11 +103,32 @@ const StatHeader: FC = () => {
         </div>
         <div className={styles.main}>{LinkAndQRCodeElem}</div>
         <div className={styles.right}>
-          <Button type="primary" onClick={() => nav(`/question/edit/${id}`)}>
-            编辑问卷
-          </Button>
+          <Space>
+            <Button
+              icon={<FileTextOutlined />}
+              onClick={() => {
+                // 未配置时引导（照搬编辑页 AI 按钮模式），配置过直接开报告弹窗
+                if (!aiConfigured) {
+                  Modal.warning({
+                    title: '请先配置 AI 模型',
+                    content: '使用 AI 解读报告需先配置 API Key，请点击顶部昵称 → AI 设置完成配置',
+                    okText: '知道了',
+                  })
+                  return
+                }
+                setReportOpen(true)
+              }}
+            >
+              AI 解读报告
+            </Button>
+            <Button type="primary" onClick={() => nav(`/question/edit/${id}`)}>
+              编辑问卷
+            </Button>
+          </Space>
         </div>
       </div>
+
+      <AIReportModal questionId={id} open={reportOpen} onClose={() => setReportOpen(false)} />
     </div>
   )
 }

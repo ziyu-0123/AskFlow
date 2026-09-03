@@ -94,3 +94,17 @@ export async function summarizeAnswersService(
   )) as SummarizeAnswersResult
   return data
 }
+
+// AI 整卷分析报告的响应（overview 总体结论 + 每题洞察 + 改进建议）
+export type ReportResult = {
+  overview: string
+  insights: { question: string; finding: string; chartDesc: string }[]
+  suggestions: string[]
+}
+
+// AI 生成整卷分析报告（纯生成，不落库；后端自行聚合全卷答卷数据）
+export async function analyzeReportService(questionId: string): Promise<ReportResult> {
+  const url = `/api/ai/analyze-report`
+  const data = (await axios.post(url, { questionId }, { timeout: 60 * 1000 })) as ReportResult
+  return data
+}
