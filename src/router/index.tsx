@@ -17,6 +17,7 @@ const Trash = lazy(() => import('../pages/manage/Trash'))
 const Star = lazy(() => import('../pages/manage/Star'))
 const Edit = lazy(() => import('../pages/question/Edit'))
 const Stat = lazy(() => import('../pages/question/stat'))
+const InterviewEdit = lazy(() => import('../pages/question/InterviewEdit'))
 
 // chunk 加载态：居中 Spin，与 MainLayout 内置 loading 视觉一致
 const fallback = (
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
       {
         path: 'stat/:id',
         element: withSuspense(Stat),
+      },
+      {
+        path: 'interview/:id',
+        element: withSuspense(InterviewEdit),
       },
     ],
   },

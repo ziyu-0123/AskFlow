@@ -9,6 +9,7 @@ import {
   StarOutlined,
   DeleteOutlined,
   RobotOutlined,
+  CommentOutlined,
 } from '@ant-design/icons'
 import styles from './ManageLayout.module.scss'
 import { createQuestionService } from '../services/question'
@@ -33,17 +34,24 @@ const ManageLayout: FC = () => {
   //   setLoading(false)
   // }
 
-  const {
-    loading,
-    // error,
-    run: handleCreateClick,
-  } = useRequest(createQuestionService, {
+  const { loading, run: handleCreateClick } = useRequest(() => createQuestionService(), {
     manual: true,
     onSuccess(result) {
       nav(`/question/edit/${result.id || result._id}`)
       message.success('创建成功')
     },
   })
+
+  const { loading: interviewLoading, run: handleCreateInterview } = useRequest(
+    () => createQuestionService('interview'),
+    {
+      manual: true,
+      onSuccess(result) {
+        nav(`/question/interview/${result.id || result._id}`)
+        message.success('创建成功')
+      },
+    }
+  )
 
   console.log('pathname', pathname)
 
@@ -72,6 +80,14 @@ const ManageLayout: FC = () => {
             disabled={loading}
           >
             新建问卷
+          </Button>
+          <Button
+            size="large"
+            icon={<CommentOutlined />}
+            onClick={handleCreateInterview}
+            disabled={interviewLoading}
+          >
+            新建访谈
           </Button>
           <Button size="large" icon={<RobotOutlined />} onClick={handleAIGenerateClick}>
             AI 生成问卷

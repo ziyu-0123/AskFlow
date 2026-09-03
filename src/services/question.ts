@@ -56,6 +56,10 @@ export interface QuestionData {
   answerCount: number
   createdAt: string
   updatedAt?: string // 可选
+  type?: 'survey' | 'interview'
+  interviewConfig?: {
+    outline: string[]
+  }
   componentList?: ComponentData[]
   translations?: {
     [lang: string]: QuestionTranslation
@@ -100,9 +104,9 @@ export async function getQuestionService(id: string): Promise<QuestionData> {
 }
 
 // 创建问卷
-export async function createQuestionService(): Promise<QuestionData> {
+export async function createQuestionService(type?: 'survey' | 'interview'): Promise<QuestionData> {
   const url = `/api/question`
-  const data = (await axios.post(url)) as QuestionData
+  const data = (await axios.post(url, type ? { type } : {})) as QuestionData
   return data
 }
 
