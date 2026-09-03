@@ -127,3 +127,16 @@ export async function generateInterviewOutlineService(
   )) as GenerateInterviewOutlineResult
   return data
 }
+
+// AI 总结访谈答卷（整卷主题聚类 + 情感，复用 SummarizeAnswersResult 结构）
+export async function summarizeInterviewService(
+  questionId: string
+): Promise<SummarizeAnswersResult> {
+  const url = `/api/ai/summarize-interview`
+  const data = (await axios.post(
+    url,
+    { questionId },
+    { timeout: 60 * 1000 }
+  )) as SummarizeAnswersResult
+  return data
+}

@@ -6,6 +6,7 @@ export type PageInfoType = {
   js?: string
   css?: string
   isPublished?: boolean
+  type?: 'survey' | 'interview'
 }
 
 const INIT_STATE: PageInfoType = {

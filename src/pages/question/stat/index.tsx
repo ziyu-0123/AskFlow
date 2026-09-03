@@ -9,11 +9,12 @@ import StatHeader from './StatHeader'
 import ComponentList from './ComponentList'
 import PageStat from './PageStat'
 import ChartStat from './ChartStat'
+import InterviewStat from './InterviewStat'
 
 const Stat: FC = () => {
   const nav = useNavigate()
   const { loading } = useLoadQuestionData()
-  const { title, isPublished } = useGetPageInfo()
+  const { title, isPublished, type } = useGetPageInfo()
 
   // 状态提升
   const [selectedComponentId, setSelectedComponentId] = useState('')
@@ -71,6 +72,11 @@ const Stat: FC = () => {
         </div>
       </>
     )
+  }
+
+  // 访谈问卷走访谈统计视图（逐份聊天记录 + AI 总结）
+  if (type === 'interview') {
+    return <InterviewStat />
   }
 
   return (
