@@ -1,9 +1,20 @@
 import { type FC, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Input, Space, Typography, message, Spin } from 'antd'
-import { LeftOutlined, PlusOutlined, DeleteOutlined, SendOutlined } from '@ant-design/icons'
+import { useDispatch } from 'react-redux'
+import { Button, Input, Space, Typography, message, Spin, Modal } from 'antd'
+import {
+  LeftOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  SendOutlined,
+  RobotOutlined,
+} from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { getQuestionService, updateQuestionService } from '../../../services/question'
+import { generateInterviewOutlineService } from '../../../services/ai'
+import useGetUserInfo from '../../../hooks/useGetUserInfo'
+import { updateAiConfiguredReducer } from '../../../store/userReducer'
+import AISettingsModal from '../../../components/AISettingsModal'
 import styles from './index.module.scss'
 
 const { Title, Text } = Typography
@@ -11,10 +22,13 @@ const { TextArea } = Input
 
 const InterviewEdit: FC = () => {
   const nav = useNavigate()
+  const dispatch = useDispatch()
+  const { aiConfigured } = useGetUserInfo()
   const { id = '' } = useParams()
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
   const [outline, setOutline] = useState<string[]>([])
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   // 加载访谈问卷（标题 / 描述 / 提纲）
   const { loading } = useRequest(
@@ -80,6 +94,40 @@ const InterviewEdit: FC = () => {
       return
     }
     publish()
+  }
+
+  const { loading: generating, run: generate } = useRequest(
+    () => generateInterviewOutlineService(title, desc),
+    {
+      manual: true,
+      onSuccess(data) {
+        setOutline(data.outline ?? [])
+        message.success('提纲已生成，可继续编辑')
+      },
+      onError(err) {
+        // 后端 400"请先配置"说明 aiConfigured 已过期，同步标记并直开设置弹窗
+        if (err.message.includes('请先配置')) {
+          dispatch(updateAiConfiguredReducer(false))
+          setSettingsOpen(true)
+        }
+      },
+    }
+  )
+
+  function handleGenerateOutline() {
+    if (!title.trim()) {
+      message.warning('请先填写访谈标题')
+      return
+    }
+    if (!aiConfigured) {
+      Modal.warning({
+        title: '请先配置 AI 模型',
+        content: '使用 AI 生成提纲需先配置 API Key，请点击顶部昵称 → AI 设置完成配置',
+        okText: '知道了',
+      })
+      return
+    }
+    generate()
   }
 
   function addOutline() {
@@ -150,9 +198,20 @@ const InterviewEdit: FC = () => {
             <div className={styles.field}>
               <div className={styles.outlineHeader}>
                 <Text strong>访谈提纲</Text>
-                <Button type="dashed" size="small" icon={<PlusOutlined />} onClick={addOutline}>
-                  添加问题
-                </Button>
+                <Space>
+                  <Button
+                    type="dashed"
+                    size="small"
+                    icon={<RobotOutlined />}
+                    onClick={handleGenerateOutline}
+                    loading={generating}
+                  >
+                    AI 生成提纲
+                  </Button>
+                  <Button type="dashed" size="small" icon={<PlusOutlined />} onClick={addOutline}>
+                    添加问题
+                  </Button>
+                </Space>
               </div>
               {outline.length === 0 ? (
                 <Text type="secondary">暂无提纲，点击「添加问题」逐条补充</Text>
@@ -177,6 +236,7 @@ const InterviewEdit: FC = () => {
           </div>
         )}
       </div>
+      <AISettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   )
 }

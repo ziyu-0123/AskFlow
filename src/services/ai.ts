@@ -108,3 +108,22 @@ export async function analyzeReportService(questionId: string): Promise<ReportRe
   const data = (await axios.post(url, { questionId }, { timeout: 60 * 1000 })) as ReportResult
   return data
 }
+
+// AI 生成访谈提纲的响应
+export type GenerateInterviewOutlineResult = {
+  outline: string[]
+}
+
+// AI 生成访谈提纲（纯生成，不落库）
+export async function generateInterviewOutlineService(
+  title: string,
+  desc: string
+): Promise<GenerateInterviewOutlineResult> {
+  const url = `/api/ai/generate-interview-outline`
+  const data = (await axios.post(
+    url,
+    { title, desc },
+    { timeout: 60 * 1000 }
+  )) as GenerateInterviewOutlineResult
+  return data
+}
