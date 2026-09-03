@@ -1,9 +1,31 @@
-import { type FC, useState } from 'react'
+import { type FC, useState, useRef, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, Space, Typography, Spin, Empty, Card, Modal } from 'antd'
-import { LeftOutlined, EditOutlined, RobotOutlined } from '@ant-design/icons'
+import {
+  Button,
+  Space,
+  Typography,
+  Spin,
+  Empty,
+  Card,
+  Modal,
+  Collapse,
+  Pagination,
+  Input,
+  Tooltip,
+  Popover,
+  message,
+  type InputRef,
+} from 'antd'
+import {
+  LeftOutlined,
+  EditOutlined,
+  RobotOutlined,
+  CopyOutlined,
+  QrcodeOutlined,
+} from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { useDispatch } from 'react-redux'
+import { QRCodeCanvas as QRCode } from 'qrcode.react'
 import { getInterviewAnswerListService } from '../../../services/stat'
 import { summarizeInterviewService, type SummarizeAnswersResult } from '../../../services/ai'
 import { updateAiConfiguredReducer } from '../../../store/userReducer'
@@ -23,19 +45,64 @@ type ConversationItem = { role: string; content: string }
 type InterviewAnswer = { _id: string; conversationList: ConversationItem[] }
 type InterviewListData = { list: InterviewAnswer[]; total: number }
 
+const PAGE_SIZE = 10
+
+// 取受访者第一条回答作为折叠摘要，超出长度截断
+function getFirstAnswer(conversationList: ConversationItem[]): string {
+  return conversationList.find(m => m.role === 'interviewee')?.content ?? ''
+}
+function truncate(text: string, len: number): string {
+  if (!text) return ''
+  return text.length > len ? `${text.slice(0, len)}...` : text
+}
+
 const InterviewStat: FC = () => {
   const nav = useNavigate()
   const { id = '' } = useParams()
   const dispatch = useDispatch()
-  const { title } = useGetPageInfo()
+  const { title, isPublished } = useGetPageInfo()
   const { aiConfigured } = useGetUserInfo()
   const [summary, setSummary] = useState<SummarizeAnswersResult | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [page, setPage] = useState(1)
+
+  // 分享链接 + 二维码（填写入口）
+  const urlInputRef = useRef<InputRef>(null)
+  function copy() {
+    const elem = urlInputRef.current
+    if (elem == null) return
+    elem.select()
+    document.execCommand('copy')
+    message.success('拷贝成功')
+  }
+  const LinkAndQRCodeElem = useMemo(() => {
+    if (!isPublished) return null
+    const url = `http://localhost:3000/question/${id}`
+    const QRCodeElem = (
+      <div style={{ textAlign: 'center' }}>
+        <QRCode value={url} size={150} />
+      </div>
+    )
+    return (
+      <Space>
+        <Input value={url} style={{ width: '300px' }} ref={urlInputRef} />
+        <Tooltip title="拷贝链接">
+          <Button icon={<CopyOutlined />} onClick={copy}></Button>
+        </Tooltip>
+        <Popover content={QRCodeElem}>
+          <Button icon={<QrcodeOutlined />}></Button>
+        </Popover>
+      </Space>
+    )
+  }, [id, isPublished])
 
   // 加载访谈答卷列表（axios 拦截器已解包，直接返回 { list, total }）
   const { data: listData, loading: listLoading } = useRequest(
-    () => getInterviewAnswerListService(id, { page: 1, pageSize: 100 }),
-    { ready: !!id }
+    () => getInterviewAnswerListService(id, { page, pageSize: PAGE_SIZE }),
+    {
+      ready: !!id,
+      refreshDeps: [id, page],
+    }
   )
   const list = (listData as InterviewListData | undefined)?.list ?? []
   const total = (listData as InterviewListData | undefined)?.total ?? 0
@@ -145,17 +212,22 @@ const InterviewStat: FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Space>
-          <Button type="link" icon={<LeftOutlined />} onClick={() => nav(-1)}>
-            返回
+        <div className={styles.left}>
+          <Space>
+            <Button type="link" icon={<LeftOutlined />} onClick={() => nav(-1)}>
+              返回
+            </Button>
+            <Title level={4} style={{ margin: 0 }}>
+              {title}
+            </Title>
+          </Space>
+        </div>
+        <div className={styles.main}>{LinkAndQRCodeElem}</div>
+        <div className={styles.right}>
+          <Button icon={<EditOutlined />} onClick={() => nav(`/question/interview/${id}`)}>
+            编辑访谈
           </Button>
-          <Title level={4} style={{ margin: 0 }}>
-            {title}
-          </Title>
-        </Space>
-        <Button icon={<EditOutlined />} onClick={() => nav(`/question/interview/${id}`)}>
-          编辑访谈
-        </Button>
+        </div>
       </div>
 
       <div className={styles.content}>
@@ -192,21 +264,38 @@ const InterviewStat: FC = () => {
           ) : list.length === 0 ? (
             <Empty description="暂无访谈答卷" />
           ) : (
-            list.map((a, i) => (
-              <div key={a._id} className={styles.answerItem}>
-                <Text strong>访谈 {i + 1}</Text>
-                <div className={styles.conversation}>
-                  {(a.conversationList ?? []).map((m, j) => (
-                    <div
-                      key={j}
-                      className={m.role === 'interviewer' ? styles.msgLeft : styles.msgRight}
-                    >
-                      <div className={styles.bubble}>{m.content}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))
+            <>
+              <Collapse
+                items={list.map((a, i) => {
+                  const firstAnswer = truncate(getFirstAnswer(a.conversationList ?? []), 30)
+                  return {
+                    key: a._id,
+                    label: `访谈 ${(page - 1) * PAGE_SIZE + i + 1}${firstAnswer ? `：${firstAnswer}` : ''}`,
+                    children: (
+                      <div className={styles.conversation}>
+                        {(a.conversationList ?? []).map((m, j) => (
+                          <div
+                            key={j}
+                            className={m.role === 'interviewer' ? styles.msgLeft : styles.msgRight}
+                          >
+                            <div className={styles.bubble}>{m.content}</div>
+                          </div>
+                        ))}
+                      </div>
+                    ),
+                  }
+                })}
+              />
+              {total > PAGE_SIZE && (
+                <Pagination
+                  current={page}
+                  pageSize={PAGE_SIZE}
+                  total={total}
+                  onChange={setPage}
+                  style={{ textAlign: 'center', marginTop: 16 }}
+                />
+              )}
+            </>
           )}
         </Card>
       </div>

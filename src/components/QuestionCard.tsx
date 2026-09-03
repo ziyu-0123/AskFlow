@@ -20,6 +20,7 @@ type PropsType = {
   isPublished: boolean
   answerCount: number
   createdAt: string
+  type?: 'survey' | 'interview'
 }
 
 // 复制接口返回类型
@@ -30,7 +31,10 @@ interface DuplicateResponse {
 
 const QuestionCard: FC<PropsType> = (props: PropsType) => {
   const nav = useNavigate()
-  const { id, isStar, title, createdAt, answerCount, isPublished } = props
+  const { id, isStar, title, createdAt, answerCount, isPublished, type } = props
+
+  // 访谈问卷的编辑入口指向访谈配置页
+  const editPath = type === 'interview' ? `/question/interview/${id}` : `/question/edit/${id}`
 
   // 修改标星
   const [isStarState, setIsStarState] = useState(isStar)
@@ -63,7 +67,8 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
       manual: true,
       onSuccess(result: DuplicateResponse) {
         message.success('复制成功')
-        nav(`/question/edit/${result.id || result._id}`)
+        const newId = result.id || result._id
+        nav(type === 'interview' ? `/question/interview/${newId}` : `/question/edit/${newId}`)
       },
     }
   )
@@ -88,7 +93,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
     <div className={styles.container}>
       <div className={styles.title}>
         <div className={styles.left}>
-          <Link to={isPublished ? `/question/stat/${id}` : `/question/edit/${id}`}>
+          <Link to={isPublished ? `/question/stat/${id}` : editPath}>
             <Space>
               {isStarState && <StarOutlined style={{ color: 'red' }} />}
               {title}
@@ -114,7 +119,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
               type="text"
               size="small"
               onClick={() => {
-                nav(`/question/edit/${id}`)
+                nav(editPath)
               }}
             >
               编辑问卷
