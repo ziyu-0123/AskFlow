@@ -8,7 +8,7 @@ export type ResDataType = {
 }
 
 const instance = axios.create({
-  baseURL: 'http://localhost:3005/',
+  baseURL: import.meta.env.VITE_API_BASE || 'http://localhost:3005/',
   timeout: 10 * 1000,
   headers: {},
 })
