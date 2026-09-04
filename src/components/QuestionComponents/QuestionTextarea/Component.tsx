@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
 import { Typography, Input } from 'antd'
 import { QuestionTextareaDefaultProps, type QuestionTextareaPropsType } from './interface'
 const { Paragraph } = Typography
@@ -17,4 +17,4 @@ const QuestionTextarea: FC<QuestionTextareaPropsType> = (props: QuestionTextarea
   )
 }
 
-export default QuestionTextarea
+export default memo(QuestionTextarea)

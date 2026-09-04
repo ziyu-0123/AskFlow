@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
 import { Typography } from 'antd'
 import type { QuestionInfoPropsType } from './interface'
 import { QuestionInfoDefaultProps } from './interface'
@@ -25,4 +25,4 @@ const Component: FC<QuestionInfoPropsType> = props => {
   )
 }
 
-export default Component
+export default memo(Component)

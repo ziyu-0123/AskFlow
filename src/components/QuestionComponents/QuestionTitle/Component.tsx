@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
 import { Typography } from 'antd'
 import { QuestionTitleDefaultProps } from './interface'
 import type { QuestionTitlePropsType } from './interface'
@@ -29,4 +29,4 @@ const QuestionTitle: FC<QuestionTitlePropsType> = (props: QuestionTitlePropsType
   )
 }
 
-export default QuestionTitle
+export default memo(QuestionTitle)

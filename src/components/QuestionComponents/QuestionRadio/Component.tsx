@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
 import { Typography, Radio, Space } from 'antd'
 import { type QuestionRadioPropsType, QuestionRadioDefaultProps } from './interface'
 
@@ -26,4 +26,4 @@ const QuestionRadio: FC<QuestionRadioPropsType> = props => {
   )
 }
 
-export default QuestionRadio
+export default memo(QuestionRadio)

@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
 import { Typography, Input } from 'antd'
 import { QuestionInputDefaultProps } from './interface'
 import type { QuestionInputPropsType } from './interface'
@@ -18,4 +18,4 @@ const QuestionInput: FC<QuestionInputPropsType> = (props: QuestionInputPropsType
   )
 }
 
-export default QuestionInput
+export default memo(QuestionInput)

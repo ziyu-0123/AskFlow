@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
 import { Typography, Checkbox, Space } from 'antd'
 import { type QuestionCheckboxPropsType, QuestionCheckboxDefaultProps } from './interface'
 
@@ -23,4 +23,4 @@ const QuestionCheckbox: FC<QuestionCheckboxPropsType> = props => {
   )
 }
 
-export default QuestionCheckbox
+export default memo(QuestionCheckbox)
