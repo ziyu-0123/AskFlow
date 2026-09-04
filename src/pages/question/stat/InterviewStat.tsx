@@ -42,7 +42,8 @@ const percent = (count: number, total: number) =>
 const SENTIMENT_COLORS = { positive: '#52c41a', negative: '#ff4d4f', neutral: '#bfbfbf' }
 
 type ConversationItem = { role: string; content: string }
-type InterviewAnswer = { _id: string; conversationList: ConversationItem[] }
+type InterviewUsage = { prompt: number; completion: number; total: number }
+type InterviewAnswer = { _id: string; conversationList: ConversationItem[]; usage?: InterviewUsage }
 type InterviewListData = { list: InterviewAnswer[]; total: number }
 
 const PAGE_SIZE = 10
@@ -270,17 +271,27 @@ const InterviewStat: FC = () => {
                   const firstAnswer = truncate(getFirstAnswer(a.conversationList ?? []), 30)
                   return {
                     key: a._id,
-                    label: `访谈 ${(page - 1) * PAGE_SIZE + i + 1}${firstAnswer ? `：${firstAnswer}` : ''}`,
+                    label: `访谈 ${(page - 1) * PAGE_SIZE + i + 1}${firstAnswer ? `：${firstAnswer}` : ''}${a.usage ? ` · ${a.usage.total} tokens` : ''}`,
                     children: (
-                      <div className={styles.conversation}>
-                        {(a.conversationList ?? []).map((m, j) => (
-                          <div
-                            key={j}
-                            className={m.role === 'interviewer' ? styles.msgLeft : styles.msgRight}
-                          >
-                            <div className={styles.bubble}>{m.content}</div>
+                      <div>
+                        {a.usage && (
+                          <div style={{ marginBottom: 12, color: '#8c8c8c', fontSize: 12 }}>
+                            token 用量：prompt {a.usage.prompt} · completion {a.usage.completion} ·
+                            total {a.usage.total}
                           </div>
-                        ))}
+                        )}
+                        <div className={styles.conversation}>
+                          {(a.conversationList ?? []).map((m, j) => (
+                            <div
+                              key={j}
+                              className={
+                                m.role === 'interviewer' ? styles.msgLeft : styles.msgRight
+                              }
+                            >
+                              <div className={styles.bubble}>{m.content}</div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     ),
                   }
