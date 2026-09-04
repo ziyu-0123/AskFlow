@@ -1,33 +1,14 @@
-import { useEffect, type FC } from 'react'
-// import { useEffect } from 'react'
+import { type FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Typography } from 'antd'
 import { MANAGE_INDEX_PATHNAME } from '../router'
 import styles from './Home.module.scss'
-import axios from 'axios'
 
 const { Title, Paragraph } = Typography
 
 const Home: FC = () => {
   const nav = useNavigate()
 
-  // useEffect(() => {
-  //   // fetch('/api/test')
-  //   //   .then(res => res.json())
-  //   //   .then(data => console.log('fetch data', data))
-  //   axios.get('/api/test').then(res => console.log('axios res', res.data))
-  // }, [])
-
-  useEffect(() => {
-    axios.get('/api/test').then(data => console.log('axios data', data))
-  })
-
-  // function clickHandler() {
-  //   nav({
-  //     pathname: '/login',
-  //     search: 'b=21',
-  //   })
-  // }
   return (
     <div className={styles.container}>
       <div className={styles.info}>
