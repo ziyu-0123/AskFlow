@@ -53,8 +53,6 @@ const ManageLayout: FC = () => {
     }
   )
 
-  console.log('pathname', pathname)
-
   // 未配置 AI 时点击引导去设置；已配置则打生成弹窗
   function handleAIGenerateClick() {
     if (!aiConfigured) {

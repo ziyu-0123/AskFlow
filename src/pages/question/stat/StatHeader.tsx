@@ -67,8 +67,8 @@ const StatHeader: FC = () => {
   const LinkAndQRCodeElem = useMemo(() => {
     if (!isPublished) return null
 
-    // 拼接 url ，需要参考 C 端的规则
-    const url = `http://localhost:3000/question/${id}`
+    // 拼接 url ，需要参考 C 端的规则；部署时用 VITE_CLIENT_BASE 配置 C 端地址
+    const url = `${import.meta.env.VITE_CLIENT_BASE || 'http://localhost:3000'}/question/${id}`
 
     // 定义二维码组件
     const QRCodeElem = (
