@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# 个人简历/求职策略文档（不上传 GitHub）
-docs/简历竞争力优化建议.md
+# 开发文档（不上传 GitHub）
+docs/

@@ -20,6 +20,7 @@ type PropsType = {
   isPublished: boolean
   answerCount: number
   createdAt: string
+  updatedAt?: string
   type?: 'survey' | 'interview'
 }
 
@@ -31,7 +32,7 @@ interface DuplicateResponse {
 
 const QuestionCard: FC<PropsType> = (props: PropsType) => {
   const nav = useNavigate()
-  const { id, isStar, title, createdAt, answerCount, isPublished, type } = props
+  const { id, isStar, title, createdAt, updatedAt, answerCount, isPublished, type } = props
 
   // 访谈问卷的编辑入口指向访谈配置页
   const editPath = type === 'interview' ? `/question/interview/${id}` : `/question/edit/${id}`
@@ -106,7 +107,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
             &nbsp;
             <span>答卷: {answerCount}</span>
             &nbsp;
-            <span>{createdAt}</span>
+            <span>{updatedAt || createdAt}</span>
           </Space>
         </div>
       </div>

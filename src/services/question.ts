@@ -82,6 +82,7 @@ function normalizeQuestion(q: QuestionData): QuestionData {
     answerCount: q.answerCount ?? 0,
     // 后端返回 ISO 原始字符串（如 2026-08-31T11:26:28.547Z），格式化为本地时间
     createdAt: formatDateTime(q.createdAt),
+    updatedAt: formatDateTime(q.updatedAt),
   }
 }
 
